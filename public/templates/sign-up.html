@@ -1,0 +1,35 @@
+<div>
+  <toolbar></toolbar>
+</div>
+
+<div class="main wallpaper" ng-model="height" element-size layout="column" layout-padding layout-margin layout-align="start start">
+
+  <div class="signin">
+    <h1>Sign Up</h1>
+
+    <validation-errors ng-show="vm.hasValidationErrors" errors="vm.validationErrors"></validation-errors>
+
+    <form layout="column"> 
+      <md-input-container>
+        <input type="text" placeholder="Full Name" ng-model="vm.fullName">
+      </md-input-container>
+      <md-input-container>
+        <input type="email" placeholder="Email Address" ng-model="vm.emailAddress">
+      </md-input-container>
+      <md-input-container>
+        <input type="password" placeholder="Password" ng-model="vm.password">
+      </md-input-container> 
+      <md-input-container>
+        <input type="password" placeholder="Confirm Password" ng-model="vm.confirmPassword">
+      </md-input-container> 
+      <md-content style="background: none;">
+        <md-button ui-sref="signup" class="md-primary md-raised md-ink-ripple" type="submit" ng-click="vm.signUp()">Sign Up</md-button>
+        <md-button ui-sref="signin">Sign In</a>
+      </md-content>
+    </form>
+  </div>
+</div>
+
+<div>
+    <footer-bar></footer-bar>
+</div>

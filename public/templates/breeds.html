@@ -1,0 +1,29 @@
+<div>
+    <toolbar></toolbar>
+</div>
+<div class="main">
+
+    <div layout="column">
+        <md-content layout="row" class="md-toolbar-tools" flex layout-wrap layout-align="center start">
+            <a class="button-letter all md-whiteframe-6dp" ui-sref="breeds({letter: ''})">
+                ALL
+            </a> 
+            <a class="button-letter md-whiteframe-6dp" md-theme="dark-teal" ng-repeat="letter in vm.alphabet" ui-sref="breeds({letter: letter })">
+                {{ letter }}
+            </a>
+       </md-content>
+        <div layout="row" layout-align="center end" flex layout-wrap> 
+            <span ng-show="vm.letter">
+                There
+                <span ng-show="vm.dogs.length==1">is 1 breed </span>
+                <span ng-show="vm.dogs.length != 1">are {{ vm.dogs.length }} breeds </span>
+                beginning with the letter {{ vm.letter }}.
+            </span>
+            <span ng-hide="vm.letter">There are {{ vm.dogs.length }} dogs in the database.</span>
+        </div>
+    </div>
+    <dog-card-short></dog-card-short>
+</div>
+
+<footer-bar></footer-bar>
+

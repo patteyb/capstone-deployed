@@ -1,0 +1,32 @@
+<!-- CARD CONTENT -->
+<div flex="100" ng-model="height" element-size>
+    <div layout="row" layout-align="center center" layout-padding>
+        Click on the name to view more details on the breed.
+    </div>
+    <div ng-show="vm.currentUser.isAuthenticated" layout="row" layout-align="center center" layout-padding>
+        <h2>Click on the paw to add that breed to your list of favorites.</h2>
+    </div>
+    <div ng-show="!vm.currentUser.isAuthenticated" layout="row"  layout-align="center center" layout-padding>
+        <h2>SIGN IN or SIGN UP to save breeds and rescues to your personal favorites list.</h2>
+    </div>
+    <md-content layout="row" layout-align="center" layout-wrap layout-margin layout-padding>
+        <md-card class="breed-card" flex="15" ng-repeat="dog in vm.dogs">  
+            <md-card-content>
+                <div>
+                    <a ng-href="{{ dog.imageRef }}" title="{{ dog.imageTitle }}">
+                        <img ng-src="{{ dog.imageURL }}" ng-show="dog.imageURL != ''" alt="{{ dog.breed }}" ng-click="vm.getDog( dog._id )">
+                        <img ng-src="{{ dog.imageURL2 }}" ng-show="dog.imageURL == '' && dog.imageURL2 != ''" alt="{{ dog.breed }}" ng-click="vm.getDog( dog._id )">
+                        <img ng-src="/images/NoPhoto.png" ng-show="dog.imageURL=='' && dog.imageURL2==''" alt="{{ dog.breed }}" ng-click="vm.getDog( dog._id )">
+                    </a>
+                </div>
+                <div layout="row" layout-padding layout-align="center center">
+                    <span class="{{ dog.favClass }}" id="{{dog._id}}" ng-click="vm.toggleFavorite(dog._id, dog.breed)"></span>
+                    <a ui-sref="detail({ id: dog._id })">{{ dog.breed }}</a>
+                </div>
+                <div layout="row" layout-padding layout-align="center center">
+                    {{ dog.shortDesc }}
+                </div>
+           </md-card-content> 
+        </md-card>
+    </md-content>
+</div>

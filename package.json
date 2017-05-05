@@ -1,0 +1,40 @@
+{
+  "name": "findadog",
+  "version": "1.0.0",
+  "description": "API to help users find their dream dog",
+  "main": "src/index.js",
+  "scripts": {
+    "ng": "ng",
+    "start": "node src/index.js",
+  },
+  "author": "Pattey Bleecker",
+  "license": "MIT",
+  "dependencies": {
+    "basic-auth": "^1.1.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.17.0",
+    "express": "^4.15.0",
+    "fs": "0.0.1-security",
+    "js-md5": "^0.4.2",
+    "moment": "^2.18.1",
+    "mongoose": "^4.8.5",
+    "mongoose-integer": "^0.1.1",
+    "mongoose-unique-validator": "^1.0.4",
+    "morgan": "^1.8.1",
+    "path": "^0.12.7",
+    "serve-favicon": "^2.4.2",
+    "validator": "^7.0.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-csso": "^3.0.0",
+    "gulp-eslint": "^3.0.1",
+    "gulp-if": "^2.0.2",
+    "gulp-imagemin": "^3.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.1.2",
+    "gulp-useref": "^3.1.2",
+    "requirejs": "^2.3.3"
+  }
+}

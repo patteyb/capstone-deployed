@@ -1,0 +1,101 @@
+<div class="main" layout-margin layout-padding ng-model="height" element-size>
+    <!-- Change Name -->
+    <h1>Change Your Account Settings</h1>
+    <md-content>
+        <div class="settings">
+            <div layout="row" layout-margin>
+                <div layout="column" flex="80">
+                    <strong>Name:</strong>
+                    {{vm.currentUser.fullName}}
+                </div>
+                <div layout="column" flex="20">
+                    <div layout="row" layout-align="center center">
+                        <md-button class="md-raised md-primary" ng-click="vm.editFullName='true'" >
+                            Edit
+                        </md-button>
+                    </div>
+                </div>
+            </div>
+            <div layout="row" ng-show="vm.editFullName" layout-margin>
+                <div flex="60">
+                    <md-input-container>
+                        <label>Change name to:</label>
+                        <textarea cols="55" type="text" ng-model="vm.currentUser.fullName"></textarea>
+                    </md-input-container>
+                </div>
+                <div class="save-cancel" flex="40"> 
+                    <a  href="" ng-click="vm.updateUser('fullName', vm.currentUser)"> Save</a>
+                    &nbsp; &nbsp;
+                    <a href="" ng-click="vm.cancel('editFullName')"> Cancel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Email Address -->
+        <div class="settings">
+            <div layout="row" layout-margin>
+                <div layout="column" flex="80">
+                    <strong>Email:</strong>
+                    {{vm.currentUser.emailAddress}}
+                </div>
+                <div layout="column" flex="20">
+                    <div layout="row" layout-align="center center">
+                        <md-button class="md-raised md-primary" ng-click="vm.editEmailAddress='true'">
+                            Edit
+                        </md-button>
+                    </div>
+                </div>
+            </div>
+            <div layout="row" ng-show="vm.editEmailAddress" layout-margin>
+                <div flex="60">
+                    <md-input-container>
+                        <label>Change email to:</label>
+                        <textarea type="email" cols="55" ng-model="vm.currentUser.emailAddress"></textarea>
+                    </md-input-container>
+                </div>
+                <div class="save-cancel" flex="40">
+                    <a href="" ng-click="vm.updateUser('emailAddress', vm.currentUser)"> Save</a>
+                    &nbsp; &nbsp;
+                    <a href="" ng-click="vm.cancel('editEmailAddress')"> Cancel</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password -->
+        <div class="settings">
+            <div layout="row" layout-margin>
+                <div layout="column" flex="80">
+                    <strong>Password</strong>
+                </div>
+                <div layout="column" flex="20">
+                    <div layout="row" layout-align="center center">
+                        <md-button class="md-raised md-primary" ng-click='vm.editPassword="true"'>
+                            Edit
+                        </md-button>
+                    </div>
+                </div>
+            </div>
+            <div layout="row" ng-show="vm.editPassword" layout-margin>
+                <div flex="30">
+                    <md-input-container>
+                        <label>Change password to:</label>
+                        <input type="password" ng-model="vm.password">
+                    </md-input-container>
+                </div>
+                <div flex="30">
+                    <md-input-container>
+                        <label>Confirm password:</label>
+                        <input type="password" ng-model="vm.confirmPassword">
+                    </md-input-container>
+                </div>
+                <div class="save-cancel" flex="40">
+                    <a href="" ng-click="vm.updatePassword(vm.password, vm.confirmPassword)">Save</a>
+                    &nbsp; &nbsp;
+                    <a href="" ng-click="vm.cancel('editPassword')">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </md-content>
+
+    <validation-errors ng-show="vm.hasValidationErrors" errors="vm.validationErrors"></validation-errors>
+</div>

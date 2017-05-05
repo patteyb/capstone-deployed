@@ -1,0 +1,230 @@
+ <div ng-model="height" element-size>
+     <div ng-show="vm.showForm">
+        <h2 class="teal">Fields marked with asterisks are required.</h2>
+        <h2 class="teal">Fields highlighted in <span class="red">red</span> are in error.</h2>
+    </div>
+    <form>
+        <div layout="row" layout-margin>
+            <md-input-container>
+                <label>Breed</label>
+                <input ng-model="vm.dog.breed" required>
+            </md-input-container>
+        </div>
+        <div layout="row" layout-margin>
+            <div layout="column">
+                <md-input-container>
+                    <img class="thumbnail" ng-src="{{vm.dog.imageURL}}">
+                    <label>Image URL</label>
+                    <textarea ng-model="vm.dog.imageURL"></textarea>
+                </md-input-container>
+            </div>
+            <div layout="column">
+                <md-input-container>
+                    <label>Image Reference</label>
+                    <textarea ng-model="vm.dog.imageRef"></textarea>
+                </md-input-container>
+            </div>
+            <div layout="column">
+                <md-input-container>
+                    <label>Image Title</label>
+                    <textarea ng-model="vm.dog.imageTitle"></textarea>
+                </md-input-container>
+            </div>
+        </div>
+
+        <div layout="row" layout-margin>
+            <div layout="column">
+                <md-input-container>
+                    <img class="thumbnail" ng-src="{{vm.dog.imageURL2}}">
+                    <label>Image #2 URL</label>
+                    <textarea ng-model="vm.dog.imageURL2"></textarea>
+                </md-input-container>
+            </div>
+            <div layout="column">
+                <md-input-container>
+                    <label>Functions As</label>
+                    <md-select ng-model="vm.dog.function" required>
+                        <md-option ng-repeat="function in vm.function" value="{{function}}">
+                            {{function}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container>
+                    <label>Type of Dog</label>
+                    <md-select ng-model="vm.dog.type" required>
+                        <md-option ng-repeat="type in vm.type" value="{{type}}">
+                            {{type}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout="column">
+                <md-input-container>
+                    <label>Size</label>
+                    <md-select ng-model="vm.dog.size" required>
+                        <md-option ng-repeat="size in vm.size" value="{{size}}">
+                            {{size}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container>
+                    <label>Energy Level</label>
+                    <md-select ng-model="vm.dog.energyLevel" required>
+                        <md-option ng-repeat="energyLevel in vm.energyLevel" value="{{energyLevel}}">
+                            {{energyLevel}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout="column">
+                <md-input-container>
+                    <label>Hypoallergenic</label>
+                    <md-select ng-model="vm.dog.hypoallergenic">
+                        <md-option value="true">
+                            Yes
+                        </md-option>
+                        <md-option value="false">
+                            No
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+                <md-input-container>
+                    <label>Shedding</label>
+                    <md-select ng-model="vm.dog.shedding">
+                        <md-option ng-repeat="shedding in vm.shedding" value="{{shedding}}">
+                            {{shedding}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+        </div>
+
+        <div layout="row" layout-margin>
+            <div layout="column">
+                <md-input-container>
+                    <label>Level</label>
+                    <md-select ng-model="vm.dog.exerciseIcon" required>
+                        <md-option ng-repeat="exercise in vm.exercise" value="{{exercise}}">
+                            {{exercise}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout="column">
+                <md-input-container>
+                    <label>Exercise</label>
+                    <textarea rows="1" cols="100" ng-model="vm.dog.exercise" required></textarea>
+                </md-input-container>
+            </div>
+        </div>
+
+        <div layout="row" layout-margin>
+            <div layout="column">
+                <md-input-container>
+                    <label>Groom Needs</label>
+                    <md-select ng-model="vm.dog.groomIcon" required>
+                        <md-option ng-repeat="groomLevel in vm.groomLevel" ng-selected="Medium" value="{{groomLevel}}">
+                            {{groomLevel}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout="column" layout-padding>
+                <md-input-container>
+                    <label>Grooming</label required>
+                    <textarea rows="1" cols="100" ng-model="vm.dog.grooming"></textarea>
+                </md-input-container>
+            </div>
+        </div>
+
+        <div layout="row" layout-margin>
+            <md-input-container>
+                <label>Health</label>
+                <textarea rows="1" cols="115" ng-model="vm.dog.health" required></textarea>
+            </md-input-container>
+        </div>
+
+        <div layout="row" layout-margin>
+            <md-input-container>
+                <label>Short Description</label>
+                <textarea rows="1" cols="100" ng-model="vm.dog.shortDesc" required></textarea>
+            </md-input-container>
+        </div>
+
+        <div layout="row" layout-margin>
+            <md-input-container>
+                <label>Long Description</label>
+                <textarea rows="1" cols="100" ng-model="vm.dog.longDesc"></textarea>
+            </md-input-container>
+        </div>
+        
+        <strong>Best Of Lists (check all that apply):</strong>
+        <div layout="row" layout-margin layout-align="center center">
+            <div>
+                <md-input-container>
+                    <md-checkbox ng-model="vm.dog.bestOf.apartment" aria-label="Apartment">
+                        Apartment Life
+                    </md-checkbox>
+                </md-input-container>
+            </div>
+            <div>
+                <md-input-container>
+                    <md-checkbox ng-model="vm.dog.bestOf.family" aria-label="Family">
+                        Family dog
+                    </md-checkbox>
+                </md-input-container>
+            </div>
+            <div>
+                <md-input-container>
+                    <md-checkbox ng-model="vm.dog.bestOf.active" aria-label="Family">
+                        Active dog
+                    </md-checkbox>
+                </md-input-container>
+            </div>
+            <div>
+                <md-input-container>
+                    <md-checkbox ng-model="vm.dog.bestOf.guard" aria-label="Family">
+                        Guard dog
+                    </md-checkbox>
+                </md-input-container>
+            </div>
+            <div>
+                <md-input-container>
+                    <md-checkbox ng-model="vm.dog.bestOf.quiet" aria-label="Family">
+                        Quiet
+                    </md-checkbox>
+                </md-input-container>
+            </div>
+            <div>
+                <md-input-container>
+                    <md-checkbox ng-model="vm.dog.bestOf.lowMaintenance" aria-label="Family">
+                        Low Maintenance
+                    </md-checkbox>
+                </md-input-container>
+            </div>
+        </div>
+
+        <div layout="row" layout-margin>
+            <md-input-container>
+                <label>Breed Club</label>
+                <textarea ng-model="vm.dog.club"></textarea>
+            </md-input-container>
+            <md-input-container>
+                <label>Club URL</label>
+                <textarea ng-model="vm.dog.clubURL"></textarea>
+            </md-input-container>
+            <md-input-container>
+                <label>Standard</label>
+                <textarea rows="2" cols="30" ng-model="vm.dog.breedStandard"></textarea>
+            </md-input-container>
+        </div>
+
+        <div layout="row">
+            <!--<md-button class="md-accent md-raised" ng-click="saveDog(dog)" ng-if="!editing"> Save</md-button> -->
+            <md-button class="md-accent md-raised" ng-click="vm.saveDog(vm.dog)" ng-if="!vm.editing"> Save</md-button>
+            <md-button class="md-accent md-raised" ng-click="vm.saveEdit(vm.dog)" ng-if="vm.editing"> Save Edit</md-button>
+            <md-button class="md-accent md-raised" ng-click="vm.cancel()"> Cancel</md-button>
+            <md-button class="md-warn md-raised" ng-click="vm.deleteDog($event, vm.dog)" ng-if="vm.editing"> Delete</md-button>
+        </div>
+    </form>
+</div>

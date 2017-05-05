@@ -1,0 +1,71 @@
+<div class="main" layout-margin ng-model="height" element-size>
+    <h1>Your Favorite Breeds</h1>
+    <div layout="row" ng-if="!vm.favDogs || vm.favDogs.length == 0">
+        You have not selected any breeds to include in your favorites list.
+    </div>
+    <md-content ng-show="vm.favDogs && vm.favDogs.length !== 0">
+        <div layout="row" layout-margin layout-padding>
+            <strong>Here is the list of breeds you have selected as your favorites. To remove a breed from your list, simply click on the broken heart.</strong>
+        </div>
+        <div layout="row" layout-align="center left" layout-margin>
+           <div class="fav-sort">
+                <md-radio-group class="fav-sort" ng-model="vm.sort">
+                    <strong>Sort on:</strong>&nbsp; &nbsp;
+                    <md-radio-button class="small-font" value="breed" class="md-primary" ng-selected>Breed</md-radio-button>
+                    <md-radio-button value="size">Size</md-radio-button>
+                    <md-radio-button value="energyLevel">Energy Level</md-radio-button>
+                    <md-radio-button value="exerciseIcon">Exercise</md-radio-button>
+                    <md-radio-button value="groomIcon">Grooming</md-radio-button>
+                    <md-radio-button value="shedding">Shedding</md-radio-button>
+                    <md-radio-button value="akcRank">Popular</md-radio-button>
+                </md-radio-group>
+            </div>
+        </div> <!-- end row -->
+        <div layout="row">
+            <input type="checkbox" data-ng-model="reverseOrder"/><strong style="font-size: 12px;">Reverse order</strong>
+        </div> <!-- end row -->
+        <div layout="row">
+            <table class="fav-table">
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>Energy</th>
+                    <th>Exercise</th>
+                    <th>Grooming</th>
+                    <th></th>
+                    <th>How<th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>Breed</th>
+                    <th>Size</th>
+                    <th>Level</th>
+                    <th>Required</th>
+                    <th>Needs</th>
+                    <th>Shedding</th>
+                    <th>Popular?<th>
+                </tr>
+
+                <tr ng-repeat="fav in vm.favDogs | orderBy: vm.dynamicOrder:reverseOrder">
+                    <td><img ng-src="{{fav.imageURL2}}"></td>
+                    <td>
+                        <a ui-sref="detail({ id: fav._id })">{{ fav.breed }}</a>
+                    </td>
+                    <td class="center">{{ fav.size }}</td>
+                    <td class="center">{{ fav.energyLevel }}</td>
+                    <td class="center">{{ fav.exerciseIcon }}</td>
+                    <td class="center">{{ fav.groomIcon }}</td>
+                    <td class="center">{{ fav.shedding }}</td>
+                    <td class="center">{{ fav.akcRank }}{{ordinal}}</td>
+                    <td class="center">
+                        <md-button ng-click="vm.deleteFavorite(fav)">
+                            <md-tooltip>Remove</md-tooltip>
+                            <i class="mdi mdi-heart-broken mdi-24px"></i>
+                        </md-button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </md-content>
+</div>

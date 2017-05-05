@@ -1,0 +1,45 @@
+<div>
+    <!-- TOOLBAR -->
+  <toolbar></toolbar>
+</div>
+<div class="main" ng-model="height" element-size flex="90" flex-offset="5" layout-margin>
+    <section>
+        <div class="salutation" ng-show="vm.currentUser.isAuthenticated">
+            <h2>Welcome, {{ vm.currentUser.fullName }}!</h2>
+        </div>
+    </section>
+    <div class="center" ng-if="vm.shelters.length==0">
+        We could find no shelters near zip code {{ vm.currentUser.zip}}. 
+    </div>
+    <div class="center" ng-hide="vm.shelters.length==0">
+        Here are a list of shelters near zip code {{ vm.currentUser.zip }}.
+    </div>
+    <div class="center">
+        <md-button class="md-raised md-accent" ng-click="vm.getNewZipCode()">Use Other Zip Code</md-button>
+    </div>
+    <table class="fav-table" style="margin-left: 50px;" layout="row" ng-hide="vm.shelters.length==0" align="center">
+        <tr>
+            <th>SHELTER NAME</th>
+            <th>ADDRESS</th>
+            <th>CITY</th>
+            <th>STATE</th>
+            <th>PHONE</th>
+            <th>EMAIL</th>
+        </tr>
+
+        <tr ng-repeat="shelter in vm.shelters | orderBy: 'name.$t'">
+            <td>
+                <a href="" ng-click="vm.getShelterPets($event, shelter.name.$t, shelter.id.$t)">{{ shelter.name.$t }}</a>
+            </td>
+            <td class="center">{{ shelter.address1.$t }}<span ng-if="shelter.address2.$t"><br>{{ shelter.address2.$t }}</span></td>
+            <td class="center">{{ shelter.city.$t }}</td>
+            <td class="center">{{ shelter.state.$t }}</td>
+            <td class="center">{{ shelter.phone.$t }}</td>
+            <td>{{ shelter.email.$t }}</td>
+        </tr>
+    </table>
+</div>
+
+<div>
+  <footer-bar></footer-bar>
+</div>

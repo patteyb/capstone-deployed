@@ -1,0 +1,98 @@
+<div>
+  <toolbar></toolbar>
+</div>
+  <div ng-model="height" element-size>
+    <md-content layout="row" layout-wrap layout-align="center left" layout-margin layout-padding>
+        <md-input-container>
+          <label>Size</label>
+          <md-select ng-model="vm.filters.size" ng-change="vm.getFilteredDogs(vm.filters)">
+            <md-option value="" ng-selected>All Sizes</md-option>
+            <md-option value="Small">Small</md-option>
+            <md-option value="Medium">Medium</md-option>
+            <md-option value="Large">Large</md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container>
+          <label>Energy Level</label>
+          <md-select ng-model="vm.filters.energyLevel" ng-change="vm.getFilteredDogs(vm.filters)">
+            <md-option value="" ng-selected>All Levels</md-option>
+            <md-option value="Low">Low</md-option>
+            <md-option value="Medium">Medium</md-option>
+            <md-option value="High">High</md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container>
+          <label>Exercise Needed</label>
+          <md-select ng-model="vm.filters.exerciseIcon" ng-change="vm.getFilteredDogs(vm.filters)">
+            <md-option value="" ng-selected>All Levels</md-option>
+            <md-option value="Low">Low</md-option>
+            <md-option value="Medium">Medium</md-option>
+            <md-option value="High">High</md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container>
+          <label>Grooming Needed</label>
+          <md-select ng-model="vm.filters.groomIcon" ng-change="vm.getFilteredDogs(vm.filters)">
+            <md-option value="" ng-selected>All Levels</md-option>
+            <md-option value="Low">Baths only</md-option>
+            <md-option value="Medium">Brushing/grooming as needed</md-option>
+            <md-option value="High">Frequent visits to groomer</md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container>
+          <label>Functionality</label>
+          <md-select ng-model="vm.filters.function" ng-change="vm.getFilteredDogs(vm.filters)">
+            <md-option value="" ng-selected>All Functions</md-option>
+            <md-option value="Companion">Companion</md-option>
+            <md-option value="Guard">Guard</md-option>
+            <md-option value="Hunting">Hunting</md-option>
+            <md-option value="Sled">Sled</md-option>
+            <md-option value="Working">Working</md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container>
+          <label>Type</label>
+          <md-select ng-model="vm.filters.type" ng-change="vm.getFilteredDogs(vm.filters)">
+            <md-option value="" ng-selected>All Types</md-option>
+            <md-option value="Bichon">Bichon</md-option>
+            <md-option value="Hound">Hound</md-option>
+            <md-option value="Retriever">Retriever</md-option>
+            <md-option value="Shepherd">Shepherd</md-option>
+            <md-option value="Spaniel">Spaniel</md-option>
+            <md-option value="Spitz">Spitz</md-option>
+            <md-option value="Terrier">Terrier</md-option>
+            <md-option value="Toy">Toy</md-option>
+          </md-select>
+        </md-input-container>
+        <md-input-container>
+          <label>Hypoallergenic</label>
+          <md-select ng-model="vm.filters.hypoallergenic" ng-change="vm.getFilteredDogs(vm.filters)">
+            <md-option value="" ng-selected>All Types</md-option>
+            <md-option value="true">Yes</md-option>
+            <md-option value="false">No</md-option>
+          </md-select>
+        </md-input-container>
+
+        <md-input-container>
+          <label>Shedding</label>
+          <md-select ng-model="vm.filters.shedding" ng-change="vm.getFilteredDogs(vm.filters)">
+            <md-option value="" ng-selected>All Types</md-option>
+            <md-option value="No">Doesn't shed</md-option>
+            <md-option value="Low">Sheds a little</md-option>
+            <md-option value="Average">Sheds, sometimes seasonally</md-option>
+            <md-option value="Profuse">Sheds profusely</md-option>
+          </md-select>
+        </md-input-container>
+        <md-button ng-click="vm.clearFilters()">Clear filters</md-button>
+    </md-content>
+</div>
+<div layout="row" layout-align="center center">
+</div> <!-- end row -->
+<div layout="row" layout-align="center center">
+  <span ng-show="vm.dogs.length==1">There is 1 dog meeting the selected criteria.</span>
+  <span ng-show="vm.dogs.length > 1">There are {{vm.dogs.length}} dogs meeting the selected criteria.</span>
+</div>
+
+<dog-card-short></dog-card-short>
+
+<footer-bar></footer-bar>

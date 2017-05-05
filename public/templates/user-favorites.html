@@ -1,0 +1,18 @@
+<div class="settings" layout="column" layout-margin layout-padding>
+    <h1>Users Favorites</h1>
+    <div layout="row" layout-align="center left" layout-margin>
+        <div class="fav-sort">
+            <md-radio-group class="fav-sort" ng-model="vm.sort">
+                <strong>Sort on:</strong>&nbsp; &nbsp;
+                <md-radio-button class="small-font" value="breed" class="md-primary" ng-selected>Breed</md-radio-button>
+                <md-radio-button value="count">Count</md-radio-button>
+            </md-radio-group>
+        </div>
+    </div> <!-- end row -->
+    <div layout="row">
+        <input type="checkbox" data-ng-model="reverseOrder"/><strong style="font-size: 12px;">Reverse order</strong>
+    </div> <!-- end row -->
+    <p ng-repeat="favorite in vm.favorites | orderBy: vm.dynamicOrder:reverseOrder">
+        {{ favorite.breed }}: {{ favorite.count }}
+    </p>
+</div>

@@ -1,0 +1,31 @@
+<div class="settings" layout="row" layout-margin layout-padding>
+    <h1>All Users</h1>
+</div>
+<div>
+    <div class="list-element" ng-model="height" element-size ng-repeat="user in vm.users" layout="row" layout-padding>
+        <div layout="column" class="user-list" flex="20">
+            {{user.fullName}}
+        </div>
+        <div layout="column" class="user-list" flex="30">
+            {{user.emailAddress}}
+        </div>
+        <div layout="column" class="user-list" flex="15">
+            {{user.role}}
+        </div>
+        <div layout="column" class="user-list" flex="20">
+            Favorites: {{user.favorites.length}}
+        </div>
+        <div layout="column" class="user-list" flex="15">
+            <div flex="40">
+                &nbsp; &nbsp; 
+                <a  href="" ng-click="vm.editUser(vm.user)"><i class="mdi mdi-account-edit mdi-24px"></i></a>
+                &nbsp; &nbsp;
+                <a href="" ng-click="vm.deleteUser($event, user)"><i class="mdi mdi-delete-forever mdi-24px"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <footer></footer>
+</div>

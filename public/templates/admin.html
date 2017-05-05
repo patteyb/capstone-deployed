@@ -1,0 +1,90 @@
+<div>
+    <toolbar></toolbar>
+</div>
+<div class="main" layout="row">
+    <div layout="column" flex="30" flex-offset="10">
+        <div layout="row">
+            <md-content layout-padding>
+                <h1>Dog Maintenance</h1>
+                <p><strong><i class="mdi mdi-plus-circle"></i> Add a Breed</strong><p>
+                    
+                <md-input-container>
+                    <label>Search AKC website...</label>
+                    <input ng-model="vm.searchAKC" type="text" >
+                    <md-button class="md-raised md-primary" ng-click="vm.getBreedInfo(vm.searchAKC)">Search</md-button>
+                </md-input-container> 
+                <p>OR: </p>
+                <md-input-container>
+                    <md-button ng-click="vm.showEmptyForm()">
+                        <i class="mdi mdi-plus-circle"></i> Manual Add
+                    </md-button>
+                </md-input-container>
+            </md-content>
+        </div>
+        <div layout="row">
+            <md-content layout-padding>
+                <p><strong><i class="mdi mdi-lead-pencil"></i>Edit a Breed</strong><p>
+                <md-input-container>
+                    <md-select name='breed' ng-model="vm.dog._id" placeholder="Select a breed" ng-change="vm.getDog(vm.dog._id)">
+                        <md-option value="{{breed._id}}" ng-repeat="breed in vm.dbBreeds"> {{ breed.breed }}</md-option>
+                    </md-select>
+                </md-input-container>
+            </md-content>
+        </div>
+        <div layout="row">
+            <md-content layout-padding>
+                <p><strong><i class="mdi mdi-download"></i>Database Download</strong><p>
+                <md-button ng-click="vm.createDogJSONFile()">
+                    Create JSON File
+                </md-button>
+                <div ng-if="vm.dogFileName">
+                    Download complete and stored in {{ vm.dogFileName }}.
+                </div>
+            </md-content>
+        </div>
+        <div layout="row">
+            <md-content layout-padding>
+                <h1>User Maintenance</h1>
+                <md-input-container>
+                    <div>
+                        <md-button ng-click="vm.listUsers()">
+                            <i class="mdi mdi-account-multiple"></i> List all users
+                        </md-button>
+                    </div>
+                    <div>
+                        <md-button ng-click="vm.showFavorites()">
+                            <i class="mdi mdi-heart"></i> User favorites
+                        </md-button>
+                    </div>
+                    <div layout="row">
+                        <md-content layout-padding>
+                            <p><strong><i class="mdi mdi-download"></i>Database Download</strong><p>
+                            <md-button ng-click="vm.createUserJSONFile()">
+                                Create JSON File
+                            </md-button>
+                            <div ng-if="vm.userFileName">
+                                Download complete and stored in {{ vm.userFileName }}.
+                            </div>
+                        </md-content>
+                    </div>
+                </md-input-container>
+            </md-content>
+        </div>
+
+    </div>
+    <div layout="column" flex="50" ng-show="vm.showForm">
+        <dog-form></dog-form>
+        <validation-errors ng-show="vm.hasValidationErrors" errors="vm.validationErrors"></validation-errors>
+    </div>
+    <div class="top-marg-20" layout="column" flex="50" ng-show="vm.showUserList">
+        <user-list></user-list> 
+    </div>
+    <div class="top-marg-20" layout="column" flex="50" ng-show="vm.showUserFavs">
+        <user-favorites></user-favorites> 
+    </div>
+</div>
+
+<div>
+    <footer-bar></footer-bar>
+</div>
+   
