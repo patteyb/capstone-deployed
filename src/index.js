@@ -41,7 +41,8 @@ app.use(morgan('dev'));
 app.use(jsonParser());
 
 // Setup the database connection through mongoose
-mongoose.connect('mongodb://localhost/dogs');
+//mongoose.connect('mongodb://localhost/dogs');
+mongoose.connect('mongodb://heroku_pklp80h4:s0odka3rb8tou9k02bh14psava@ds133221.mlab.com:33221/heroku_pklp80h4');
 
 var db = mongoose.connection;
 
@@ -58,8 +59,8 @@ db.once('open', function() {
 
 // setup our static route to serve files from the "public" folder
 app.use('/', express.static('public'));
-app.use('/', express.static('app'));
-app.use('/', express.static('dist'));
+//app.use('/', express.static('app'));
+//app.use('/', express.static('dist'));
 
 // Set up routes
 app.use('/api', routes.user);
