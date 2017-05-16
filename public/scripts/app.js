@@ -4,7 +4,7 @@
 
     angular.module('app', ['ngSanitize', 'ngAnimate', 'ngAria', 'ngMaterial', 'ui.router', 'duScroll']).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, $sceDelegateProvider) {
 
-        $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://www.youtube.com/**', 'http://api.petfinder.com/**']);
+        $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://www.youtube.com/**', 'https://api.petfinder.com/**']);
 
         $mdThemingProvider.theme('default')
             .primaryPalette('amber')
@@ -1562,22 +1562,22 @@
             }
 
             function getRescues(id) {
-                var url = 'http://api.petfinder.com/pet.get?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json&callback=JSON_CALLBACK';
+                var url = 'https://api.petfinder.com/pet.get?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json&callback=JSON_CALLBACK';
                 return $http.jsonp(url);
             }
 
             function getRandomRescue(zip) {
-                 var url = 'http://api.petfinder.com/pet.getRandom?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&location=' + zip + '&output=full&format=json&callback=JSON_CALLBACK';
+                 var url = 'https://api.petfinder.com/pet.getRandom?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&location=' + zip + '&output=full&format=json&callback=JSON_CALLBACK';
                 return $http.jsonp(url);
             }
 
             function getShelters(zip) {
-                var url = 'http://api.petfinder.com/shelter.find?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&location=' + zip + '&format=json&callback=JSON_CALLBACK';
+                var url = 'https://api.petfinder.com/shelter.find?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&location=' + zip + '&format=json&callback=JSON_CALLBACK';
                 return $http.jsonp(url);
             }
 
             function getShelterPets(id) {
-                var url = 'http://api.petfinder.com/shelter.getPets?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json&callback=JSON_CALLBACK';
+                var url = 'https://api.petfinder.com/shelter.getPets?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json&callback=JSON_CALLBACK';
                 return $http.jsonp(url);
             }
 
@@ -1603,7 +1603,7 @@
 
 
             function getBreedsFromPetfinder() {
-                var url = 'http://api.petfinder.com/breed.list?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&format=json&callback=JSON_CALLBACK';
+                var url = 'https://api.petfinder.com/breed.list?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&format=json&callback=JSON_CALLBACK';
 
                 $http.jsonp(url).success(function(breedlist) {
                     return breedlist.petfinder.breeds.breed; 
@@ -1652,7 +1652,7 @@
 
             function getAdoptables(breed, zip) {
                 return new Promise(function(resolve, reject) {   
-                    var url = 'http://api.petfinder.com/pet.find?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&breed=' + breed + '&location=' + zip + '&format=json&callback=JSON_CALLBACK';
+                    var url = 'https://api.petfinder.com/pet.find?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&breed=' + breed + '&location=' + zip + '&format=json&callback=JSON_CALLBACK';
 
                     $http.jsonp(url).then(function(adoptables) {
                         if (adoptables.data.petfinder.pets) {
