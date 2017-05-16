@@ -4,7 +4,7 @@
 
     angular.module('app', ['ngSanitize', 'ngAnimate', 'ngAria', 'ngMaterial', 'ui.router', 'duScroll']).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, $sceDelegateProvider) {
 
-        $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://www.youtube.com/**', 'https://api.petfinder.com/**']);
+        $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://www.youtube.com/**', 'http://api.petfinder.com/**']);
 
         $mdThemingProvider.theme('default')
             .primaryPalette('amber')
@@ -15,6 +15,8 @@
             .primaryPalette('teal')
             .accentPalette('cyan')
             .backgroundPalette('teal').dark();
+
+        $mdThemingProvider.theme("success-toast");
 
         $urlRouterProvider.otherwise('/dogs');
 
@@ -31,8 +33,15 @@
                     squash: false
                 }
             },
-            controller: 'breedsCtrl as vm',
-            templateUrl: 'templates/breeds.html',
+            views: {
+                '': { 
+                    controller: 'breedsCtrl as vm',
+                    templateUrl: 'templates/breeds.html'
+                },
+                'card@breeds': { 
+                    templateUrl: 'templates/breeds-card.html'
+                }
+            }
         })
         .state('filtered', {
             url: '/dogs/filtered',
@@ -100,8 +109,15 @@
             params: {
                 list: null
             },
-            controller: 'bestOfCtrl as vm',
-            templateUrl: 'templates/best-of.html'
+            views: {
+                '': { 
+                    controller: 'bestOfCtrl as vm',
+                    templateUrl: 'templates/best-of.html'
+                },
+                'card@bestOf': { 
+                    templateUrl: 'templates/best-of-card.html'
+                }
+            }
         })
         .state('shelters', {
             url: '/dogs/shelters',
@@ -117,7 +133,6 @@
 
 
 
-
 (function () {
     'use strict';
 
@@ -126,21 +141,20 @@
         .controller('dogsCtrl', function(dogsFactory, sessionService, searchService, locationService, adoptableService, toastService, errorHandlerService, $document, $mdSidenav, $scope, $state) {
             
             var vm = this;
+            vm.page = 'Home';
             vm.currentUser = sessionService.getUser();
             vm.letter = 'A';             // This sets up for the breeds page
             vm.hideRescue = false;
             vm.height = window.innerHeight;
-            vm.querySearch = querySearch;
             vm.getDogDetail = getDogDetail;
             vm.getShelters = getShelters;
             vm.randomRescue = {};
+            vm.getDogDetail = getDogDetail;
 
             // list of breed value/display objects to set up search box
-            searchService.loadAll().then(function(results) {
-                vm.breeds = results;
+            searchService.loadBreeds().then(function(results) {
+                vm.dbBreeds = results;
             });
-            vm.querySearch = querySearch;
-            vm.getDogDetail = getDogDetail;
 
             // Set up the back-to-top button
             vm.toTop = function() {
@@ -197,13 +211,10 @@
                 });
             }
             
-          // Get list of shelters from petfinder api
-          function getShelters() {
+        // Get list of shelters from petfinder api
+        function getShelters() {
               if (!vm.currentUser.zipConfirmed) {
                 locationService.getZipCode().then(function(zip) {
-                    vm.currentUser.zip = zip;
-                    vm.currentUser.zipConfirmed = true;
-                    sessionService.setUser(vm.currentUser);
                     $state.go('shelters', { zip: vm.currentUser.zip }); 
                 }, function() {
                     toastService.showToast("You didn't enter a valid zip code.");
@@ -213,13 +224,9 @@
             }
         }
 
-        function querySearch( query ) {
-            var results = searchService.querySearch( query, vm.breeds );
-            return results;
-        }
-
-        function getDogDetail(breed) {
-            $state.go('detail', {id: null, breed: breed});
+        function getDogDetail(id) {
+            console.log('In getDogDetail: ', id);
+            $state.go('detail', {id: id, breed: null});
         }
 
     }); 
@@ -241,15 +248,14 @@
             vm.hasValidationErrors = false;
             vm.signIn = signIn;
             vm.toTop = toTop;
+            vm.getDogDetail = getDogDetail;
             vm.height = window.innerHeight;
 
-            // list of breed value/display objects
-            searchService.loadAll().then(function(results) {
-                vm.breeds = results;
+            // list of breed objects to set up search box
+            searchService.loadBreeds().then(function(results) {
+                vm.dbBreeds = results;
             });
-            vm.querySearch = querySearch;
-            vm.getDogDetail = getDogDetail;
-
+            
             function signIn() {
                 authService.signIn(vm.emailAddress, vm.password).then(
                     function() {
@@ -260,13 +266,8 @@
                     });
             }
 
-            function querySearch( query ) {
-                var results = searchService.querySearch( query, vm.breeds );
-                return results;
-            }
-
-            function getDogDetail(breed) {
-               $state.go('detail', {id: null, breed: breed});
+            function getDogDetail(id) {
+               $state.go('detail', {id: id, breed: null});
            }
 
             function displayValidationErrors(validationErrors) {
@@ -315,14 +316,13 @@
             vm.hasValidationErrors = false;
             vm.signUp = signUp;
             vm.toTop = toTop;
+            vm.getDogDetail = getDogDetail;
             vm.height = window.innerHeight;
 
-            // list of breed value/display objects for search box
-            searchService.loadAll().then(function(results) {
-                vm.breeds = results;
+           // list of breed objects to set up search box
+            searchService.loadBreeds().then(function(results) {
+                vm.dbBreeds = results;
             });
-            vm.querySearch = querySearch;
-            vm.getDogDetail = getDogDetail;
 
              function signUp() {
                 var user = {
@@ -342,14 +342,8 @@
                 });
             }
 
-            function querySearch( query ) {
-
-                var results = searchService.querySearch( query, vm.breeds );
-                return results;
-            }
-
-            function getDogDetail(breed) {
-               $state.go('detail', {id: null, breed: breed});
+            function getDogDetail(id) {
+               $state.go('detail', {id: id, breed: null});
             }    
 
             function displayValidationErrors(validationErrors) {
@@ -377,37 +371,47 @@
         .controller('breedsCtrl', function(dogsFactory, usersFactory, searchService, sessionService, errorHandlerService, toastService, $document, $stateParams, $mdSidenav, $state) {
             
             var vm = this;
+            var pageTemplate = 'Breeds // ';
             vm.currentUser = sessionService.getUser();
             vm.filters = {};
             vm.isBreedsPage = true;
             vm.height = window.innerHeight;
             vm.showBackToTop = true;
             vm.letter = $stateParams.letter;
+            vm.getBreedsByLetter = getBreedsByLetter;
             vm.toggleFavorite = toggleFavorite;
             vm.toTop = toTop;
+            vm.getDogDetail = getDogDetail;
 
             // Set up the side navigation for smaller screen sizes
             vm.toggleLeft = function() {
                 $mdSidenav('left').toggle();
             };
 
-             // list of breed value/display objects to set up search box
-            searchService.loadAll().then(function(results) {
-                vm.breeds = results;
+            // list of breed objects to set up search box
+            searchService.loadBreeds().then(function(results) {
+                vm.dbBreeds = results;
             });
-            vm.querySearch = querySearch;
-            vm.getDogDetail = getDogDetail;
 
 
             vm.alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W-Z'];
 
-                dogsFactory.getBreeds(vm.letter).then(function(dogs) {
+            getBreedsByLetter(vm.letter);
+
+            function getBreedsByLetter(letter) {
+                if (letter === '') {
+                    vm.page = pageTemplate + 'All Breeds';
+                } else {
+                    vm.page = pageTemplate + letter;
+                }
+                dogsFactory.getBreeds(letter).then(function(dogs) {
                     vm.dogs = dogs.data;
                     // Note which dogs are favorites of user
                     if (vm.currentUser.favorites.length !== 0) {
                         vm.dogs = markFavorites(vm.dogs, vm.currentUser.favorites);
                     }
                 });
+            }
 
             // Set up the back-to-top button
             function toTop() {
@@ -439,13 +443,8 @@
                }  
            }
 
-           function querySearch( query ) {
-                var results = searchService.querySearch( query, vm.breeds );
-                return results;
-            }
-
-            function getDogDetail(breed) {
-               $state.go('detail', {id: null, breed: breed});
+            function getDogDetail(id) {
+               $state.go('detail', {id: id, breed: null});
            }
 
            function markFavorites(dogs, favList) {
@@ -470,6 +469,7 @@
         .controller('filteredCtrl', function(dogsFactory, usersFactory, sessionService, searchService, errorHandlerService, toastService, $document, $state, $mdSidenav) {
             
             var vm = this;
+            vm.page = 'Dog Breeds // Filtered';
             vm.currentUser = sessionService.getUser();
             vm.filters = {};
             vm.isFilteredPage = true;
@@ -479,18 +479,17 @@
             vm.clearFilters = clearFilters;
             vm.toTop = toTop;
             vm.height = window.innerHeight;
+            vm.getDogDetail = getDogDetail;
 
             // Set up the side navigation for smaller screen sizes
             vm.toggleLeft = function() {
                 $mdSidenav('left').toggle();
             };
 
-            // list of breed value/display objects to set up search box
-            searchService.loadAll().then(function(results) {
-                vm.breeds = results;
+            // list of breed objects to set up search box
+            searchService.loadBreeds().then(function(results) {
+                vm.dbBreeds = results;
             });
-            vm.querySearch = querySearch;
-            vm.getDogDetail = getDogDetail;
 
             // Set up the back-to-top button
             vm.toTop = function() {
@@ -557,13 +556,8 @@
                 });
            }
 
-            function querySearch( query ) {
-                var results = searchService.querySearch( query, vm.breeds );
-                return results;
-            }
-
-            function getDogDetail(breed) {
-               $state.go('detail', {id: null, breed: breed});
+            function getDogDetail(id) {
+               $state.go('detail', {id: id, breed: null});
            }
 
             // Change a dog'class to reflect if they are a favorite or not
@@ -588,6 +582,7 @@
         .controller('adminCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, $document, $scope, $http, $state, $mdSidenav, $mdDialog) {
             
             var vm = this;
+            vm.page = 'Site Admin';
             vm.currentUser = sessionService.getUser();
             vm.users = [];
             vm.favorites = [];
@@ -606,24 +601,21 @@
             vm.validationErrors = {};
             vm.hasValidationErrors = false;
             vm.showBackToTop = true;
+            vm.getDogDetail = getDogDetail;
 
              // list of breed value/display objects to set up search box
-            searchService.loadAll().then(function(results) {
-                vm.breeds = results;
+            searchService.loadBreeds().then(function(results) {
+                vm.dbBreeds = results;
             });
-            vm.querySearch = querySearch;
-            vm.getDogDetail = getDogDetail;
 
             // Set up the side navigation for smaller screen sizes
             vm.toggleLeft = function() {
                 $mdSidenav('left').toggle();
             };
 
-            // Fill breed list for drop down menus
-            dogsFactory.getBreeds('').then(function(breedList) {
-                vm.dbBreeds = breedList.data;
-            }, function() {
-                toastService('Unable to get breed list');
+            // list of breed objects to set up search box
+            searchService.loadBreeds().then(function(results) {
+                vm.dbBreeds = results;
             });
 
             // Scrape breed info from AKC website and show it on the editing form
@@ -826,13 +818,8 @@
                 $document.scrollTopAnimated(0, 1000);
             };
 
-            function querySearch( query ) {
-                var results = searchService.querySearch( query, vm.breeds );
-                return results;
-            }
-
-            function getDogDetail(breed) {
-               $state.go('detail', {id: null, breed: breed});
+            function getDogDetail(id) {
+               $state.go('detail', {id: id, breed: null});
            }
 
             function displayValidationErrors(validationErrors) {
@@ -863,6 +850,11 @@
             vm.noRescues = false;
             vm.haveRescues = false;
             vm.height = window.innerHeight;
+
+            // list of breed objects to set up search box
+            searchService.loadBreeds().then(function(results) {
+                vm.dbBreeds = results;
+            });
 
             // Changes class that will display favorite breeds properly
            function markFavorites(dog, favList) {
@@ -936,10 +928,6 @@
                 });
             }
 
-            // list of breed value/display objects to set up search box
-            searchService.loadAll().then(function(results) {
-                vm.breeds = results;
-            });
 
             // Set up the side navigation for smaller screen sizes
             vm.toggleLeft = function() {
@@ -950,11 +938,13 @@
             if ($stateParams.id) {
                 getDog($stateParams.id).then(function(dog) {
                     vm.dog = dog;
+                    vm.page = 'Breed // ' + vm.dog.breed;
                     getVideos(vm.dog.breed);
                 });
             } else if ($stateParams.breed) {
                 getDogByBreed($stateParams.breed).then(function(dog) {
                     vm.dog = dog;
+                    vm.page = 'Breed // ' + vm.dog.breed;
                     getVideos(vm.dog.breed);
                 });
             }
@@ -1061,13 +1051,8 @@
                adoptableService.showAdoptable(event, adoptable);
            };
 
-            vm.querySearch = function( query ) {
-                var results = searchService.querySearch( query, vm.breeds );
-                return results;
-            };
-
-            vm.getDogDetail = function(breed) {
-               $state.go('detail', {id: null, breed: breed});
+            vm.getDogDetail = function(id) {
+               $state.go('detail', {id: id, breed: null});
            };
 
             // Set up the back-to-top button
@@ -1088,6 +1073,7 @@
         .controller('accountCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, $mdSidenav, $state, $document) {
             
             var vm = this;
+            vm.page = 'Account';
             vm.currentUser = sessionService.getUser();
             vm.editPassword = false;
             vm.editFullName = false;
@@ -1099,13 +1085,12 @@
             vm.favorites = vm.currentUser.favorites;
             vm.sort = 'fav.breed';
             vm.height = window.innerHeight;
-
-             // list of breed value/display objects to set up search box
-            searchService.loadAll().then(function(results) {
-                vm.breeds = results;
-            });
-            vm.querySearch = querySearch;
             vm.getDogDetail = getDogDetail;
+
+            // list of breed value/display objects to set up search box
+            searchService.loadBreeds().then(function(results) {
+                vm.dbBreeds = results;
+            });
 
             // Set up the side navigation for smaller screen sizes
             vm.toggleLeft = function() {
@@ -1309,13 +1294,8 @@
                 });
             };
 
-            function querySearch( query ) {
-                var results = searchService.querySearch( query, vm.breeds );
-                return results;
-            }
-
-            function getDogDetail(breed) {
-                $state.go('detail', {id: null, breed: breed});
+            function getDogDetail(id) {
+                $state.go('detail', {id: id, breed: null});
             }
 
 
@@ -1341,27 +1321,22 @@
         .controller('sheltersCtrl', function(dogsFactory, sessionService, searchService, locationService, adoptableService, toastService, errorHandlerService, $document, $scope, $mdDialog, $stateParams, $state) {
             
             var vm = this;
+            vm.page = 'Shelters';
             vm.zip = $stateParams.zip;
             vm.currentUser = sessionService.getUser();
             vm.shelters = [];
-            vm.querySearch = querySearch;
+            vm.showBackToTop = true;
             vm.getshelters = getShelters;
             vm.getShelterPets = getShelterPets;
             vm.getDogDetail = getDogDetail;
             vm.getNewZipCode = getNewZipCode;
             vm.toTop = toTop;
             vm.height = window.innerHeight;
-
-             // list of breed value/display objects to set up search box
-            searchService.loadAll().then(function(results) {
-                vm.breeds = results;
-            });
-            vm.querySearch = querySearch;
             vm.getDogDetail = getDogDetail;
 
-            // list of breed value/display objects
-            searchService.loadAll().then(function(results) {
-                vm.breeds = results;
+             // list of breed objects to set up search box
+            searchService.loadBreeds().then(function(results) {
+                vm.dbBreeds = results;
             });
 
             // Retrieve shelters from petfinder api
@@ -1466,13 +1441,8 @@
                });
            }
 
-           function querySearch( query ) {
-                var results = searchService.querySearch( query, vm.breeds );
-                return results;
-            }
-
-            function getDogDetail(breed) {
-               $state.go('detail', {id: null, breed: breed});
+            function getDogDetail(id) {
+               $state.go('detail', {id: id, breed: null});
            }
 
            // Set up the back-to-top button
@@ -1490,18 +1460,19 @@
         .controller('bestOfCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, $mdSidenav, $state, $document, $stateParams) {
 
         var vm = this;
+        vm.page = 'Best Dogs';
         vm.listType = $stateParams.list;
         vm.currentUser = sessionService.getUser();
         vm.getBestOf = getBestOf;
         vm.toTop = toTop;
+        vm.showBackToTop = true;
         vm.height = window.innerHeight;
-
-        // list of breed value/display objects to set up search box
-        searchService.loadAll().then(function(results) {
-            vm.breeds = results;
-        });
-        vm.querySearch = querySearch;
         vm.getDogDetail = getDogDetail;
+
+        // list of breed objects to set up search box
+        searchService.loadBreeds().then(function(results) {
+            vm.dbBreeds = results;
+        });
 
         // Set up the side navigation for smaller screen sizes
         vm.toggleLeft = function() {
@@ -1511,14 +1482,21 @@
         // Get the dogs that meet the specific best-of parameter
         if (vm.listType) {
             getBestOf(vm.listType).then(function(dogs) {
-                vm.dogs = dogs;
+                vm.dogs = dogs.data;
             });
         }
+
+        vm.getList = function( list ) {
+            vm.listType = list;
+            dogsFactory.getBestOfDogs(list).then(function(dogs) {
+                    vm.dogs = dogs.data;
+                });
+        };
 
         function getBestOf( list ) {
             return new Promise(function(resolve, reject) {
                 dogsFactory.getBestOfDogs(list).then(function(dogs) {
-                    dogs = dogs.data;
+                    vm.dogs = dogs.data;
                     resolve(dogs);
                 }, function() {
                     reject();
@@ -1526,13 +1504,8 @@
             });
         }
 
-        function querySearch( query ) {
-            var results = searchService.querySearch( query, vm.breeds );
-            return results;
-        }
-
-        function getDogDetail(breed) {
-            $state.go('detail', {id: null, breed: breed});
+        function getDogDetail(id) {
+            $state.go('detail', {id: id, breed: null});
         }
 
         // Set up the back-to-top button
@@ -1589,22 +1562,22 @@
             }
 
             function getRescues(id) {
-                var url = 'https://api.petfinder.com/pet.get?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json&callback=JSON_CALLBACK';
+                var url = 'http://api.petfinder.com/pet.get?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json&callback=JSON_CALLBACK';
                 return $http.jsonp(url);
             }
 
             function getRandomRescue(zip) {
-                 var url = 'https://api.petfinder.com/pet.getRandom?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&location=' + zip + '&output=full&format=json&callback=JSON_CALLBACK';
+                 var url = 'http://api.petfinder.com/pet.getRandom?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&location=' + zip + '&output=full&format=json&callback=JSON_CALLBACK';
                 return $http.jsonp(url);
             }
 
             function getShelters(zip) {
-                var url = 'https://api.petfinder.com/shelter.find?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&location=' + zip + '&format=json&callback=JSON_CALLBACK';
+                var url = 'http://api.petfinder.com/shelter.find?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&location=' + zip + '&format=json&callback=JSON_CALLBACK';
                 return $http.jsonp(url);
             }
 
             function getShelterPets(id) {
-                var url = 'https://api.petfinder.com/shelter.getPets?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json&callback=JSON_CALLBACK';
+                var url = 'http://api.petfinder.com/shelter.getPets?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json&callback=JSON_CALLBACK';
                 return $http.jsonp(url);
             }
 
@@ -1630,7 +1603,7 @@
 
 
             function getBreedsFromPetfinder() {
-                var url = 'https://api.petfinder.com/breed.list?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&format=json&callback=JSON_CALLBACK';
+                var url = 'http://api.petfinder.com/breed.list?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&format=json&callback=JSON_CALLBACK';
 
                 $http.jsonp(url).success(function(breedlist) {
                     return breedlist.petfinder.breeds.breed; 
@@ -1679,7 +1652,7 @@
 
             function getAdoptables(breed, zip) {
                 return new Promise(function(resolve, reject) {   
-                    var url = 'https://api.petfinder.com/pet.find?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&breed=' + breed + '&location=' + zip + '&format=json&callback=JSON_CALLBACK';
+                    var url = 'http://api.petfinder.com/pet.find?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&breed=' + breed + '&location=' + zip + '&format=json&callback=JSON_CALLBACK';
 
                     $http.jsonp(url).then(function(adoptables) {
                         if (adoptables.data.petfinder.pets) {
@@ -1914,7 +1887,7 @@
             };
         });
 })();
-(function() {
+(function(angular) {
 
     'use strict';
 
@@ -1989,6 +1962,12 @@
             replace: false
         };
     })
+    .directive('menu', function() {
+        return {
+            templateUrl: '/templates/menu.html',
+            replace: false
+        };
+    })
     .directive('userFavorites', function(){
         return {
             templateUrl: 'templates/user-favorites.html',
@@ -2030,7 +2009,7 @@
             };
     });
 
-})();
+})(window.angular);
 (function () {
     'use strict';
 
@@ -2351,7 +2330,8 @@
                 $mdToast.simple()
                     .content(message)
                     .position( 'top, right')
-                    .hideDelay(1500)
+                    .hideDelay(1500) 
+                    .theme('success-toast')             
               );
         };
 
@@ -2367,75 +2347,25 @@
 
     angular
         .module('app')
-        .factory('searchService', function(dogsFactory, $q, $http) {
+        .factory('searchService', function(dogsFactory, toastService, $q, $http) {
 
-        function querySearch (query, breeds) {
-            var results = query ? filterBreeds(query, breeds) : breeds;
-            return results;
-        }
-
-        /**
-         * Build breed list from database
-         */
-        function loadAll() {
+        // Fill breed list for drop down menus
+        function loadBreeds() {
             var defer = $q.defer();
-            var list = [];
             // Passing empty string = get all breeds
             dogsFactory.getBreeds('').then(function(breeds) {
                 if (breeds) {
-                    var dogs = breeds.data;
-                    for (var i = 0; i < dogs.length; i++) {
-                        var item = {
-                            value: dogs[i].breed.toLowerCase(),
-                            display: dogs[i].breed
-                        };
-                        list.push(item);
-                    }
-                    defer.resolve( list );
+                    defer.resolve( breeds.data );
                 } else {
-                    defer.reject('Unable to get list of breeds.');
+                    toastService.showToast('Unable to get breeds list.');
+                    defer.reject();
                 }
             });
             return defer.promise;
-        }
-
-        /**
-         * Build breed list 
-         */
-        function loadBreedsFromPetfinder() {
-            var defer = $q.defer();
-            //console.log ("IN dogFactory.getBreedList()");
-            var url = 'https://api.petfinder.com/breed.list?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&format=json&callback=JSON_CALLBACK';
-
-            $http.jsonp(url).success(function(breedsList) {
-                if (breedsList) {
-                    var tempArray = breedsList.petfinder.breeds.breed;
-                    var breedsArray = [];
-                    for (var i = 0; i < tempArray.length; i++) {
-                        breedsArray[i] = tempArray[i].$t;
-                    }
-                    defer.resolve( breedsArray ); 
-                } else {
-                    defer.reject('Unable to get list of breeds.');
-                }
-                });
-            return defer.promise;
-        }
-
-        /**
-         * Create filter function for a query string
-         */
-        function filterBreeds(query, breeds) {
-            var lowercaseQuery = angular.lowercase(query);            
-            return breeds.filter(function(breed) {
-                return (breed.value.indexOf(lowercaseQuery) === 0);
-            });
         }
 
         return {
-            querySearch: querySearch,
-            loadAll: loadAll,
-            loadBreedsFromPetfinder: loadBreedsFromPetfinder
+            loadBreeds: loadBreeds
         };
     });
 })();
@@ -2455,7 +2385,7 @@
         _this.getLocation = function() {
             return new Promise(function(resolve, reject) {
                var zip;
-                if (!angular.equals( navigator.geolocation, {})) {
+               if(navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function(pos) {
                         var geoStr = pos.coords.latitude +", " + pos.coords.longitude;
                         var googleURL = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + geoStr + "&key=AIzaSyC9fO8vW7pPyIRlafuzg9O4T-sm5TJ3kPo";
@@ -2481,6 +2411,7 @@
                         });
                     });
                 } else { 
+                    console.log("GeoLocation not supported");
                     reject();
                 }
                 reject();

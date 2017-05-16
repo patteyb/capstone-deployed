@@ -1,253 +1,44 @@
-<md-toolbar class="md-menu-toolbar" ng-cloak="" hide show-gt-xs>
-    <div  class="yellow" layout="row">
-
-        <md-toolbar-filler layout="" layout-align="center center">
-        </md-toolbar-filler>
-
-        <div class="azure-background">
-            <a ui-sref='index'><img class="logo-text" src="/images/logo3-long.png"></a>
+<md-toolbar class="md-menu-toolbar" hide show-gt-xs>
+    <div  class="yellow" layout="row" layout-align="space-between center">
+        <div class="page-title" flex hide show-gt-md>
+                {{ vm.page }}
+        </div>
+        <div class="main-menu">
             <md-menu-bar>
-                <md-menu>
-                    <button ng-click="$mdMenu.open()" aria-label="Breeds">
-                        <i class="mdi mdi-chevron-double-right" md-menu-align-target></i>
-                            Breeds
-                    </button>
-                    <md-menu-content> 
-                        <md-menu-item>
-                            <md-button ui-sref="breeds({letter: 'A'})">
-                                Alphabetical Listing
-                            </md-button>
-                        </md-menu-item>
-                        <md-menu-divider></md-menu-divider>
-                        <md-menu-item>
-                            <md-button ui-sref="filtered">
-                                Filter List
-                            </md-button>
-                        </md-menu-item>
-                        <md-menu-divider></md-menu-divider>
-                        <md-menu-item>
-                            <form ng-submit="vm.getDogDetail(vm.searchText)">
-                                <md-autocomplete md-selected-item="vm.selectedItem" 
-                                    md-autoselect=true
-                                    md-no-cache="true"
-                                    md-search-text="vm.searchText" 
-                                    md-items="item in vm.querySearch(vm.searchText)" md-item-text="item.display" 
-                                    md-clear-button="true"
-                                    md-select-on-match=true
-                                    md-match-case-insenstive=true
-                                    md-dropdown-items="10"
-                                    md-min-length="0" placeholder="Search for breed..." type="submit">
-                                    <md-item-template>
-                                        <span md-highlight-text="vm.searchText" md-highlight-flags="^i">{{item.display}}</span>
-                                    </md-item-template>
-                                    <md-not-found>
-                                        <span style="font-size: xsmall;">No breeds matching "{{vm.searchText}}" were found.</span>
-                                    </md-not-found>
-                                </md-autocomplete>
-                            </form> 
-                        </md-menu-item> 
-                    </md-menu-content>
-                </md-menu>
-                <md-menu ng-hide="vm.currentUser.isAuthenticated">
-                    <button ng-click="$mdMenu.open()">
-                        <i class="mdi mdi-chevron-double-right" md-menu-align-target></i>
-                        Sign In
-                    </button>
-                    <md-menu-content> 
-                        <md-menu-item>
-                           <md-button ui-sref="signin">
-                                Returning Member
-                            </md-button> 
-                        </md-menu-item>
-                        <md-menu-item>
-                            <md-button ui-sref="signup">
-                                New Member
-                            </md-button> 
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu> 
-                <md-menu ng-hide="!vm.currentUser.isAuthenticated">
-                    <button ng-click="$mdMenu.open()">
-                        <i class="mdi mdi-chevron-double-right" md-menu-align-target></i>
-                        Account
-                    </button>
-                    <md-menu-content> 
-                        <md-menu-item>
-                            <md-button ui-sref="account.usercreds">
-                                Log-in Settings
-                            </md-button>
-                        </md-menu-item>
-                        <md-menu-item>
-                            <md-button ui-sref="account.favorites">
-                                Compare Favorite Breeds
-                            </md-button>
-                        </md-menu-item>
-                        <md-menu-item>
-                            <md-button ui-sref="account.rescues">
-                                Show Favorite Rescues
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
-                    <md-menu ng-show="vm.currentUser.isAuthenticated && vm.currentUser.isAdmin">
-                    <button ng-click="$mdMenu.open()">
-                        <i class="mdi mdi-chevron-double-right" md-menu-align-target></i>
-                        Admin
-                    </button>
-                    <md-menu-content>
-                        <md-menu-item>
-                            <md-button ui-sref="admin">
-                                Admin Page
-                            </md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu> 
-                <md-menu ng-hide="!vm.currentUser.isAuthenticated">
-                    <button ng-click="$mdMenu.open()">
-                        <i class="mdi mdi-chevron-double-right" md-menu-align-target></i>
-                        Sign Out
-                    </button>
-                    <md-menu-content>
-                        <md-menu-item>
-                            <md-button ui-sref="signout">Sure you want to leave?</md-button>
-                        </md-menu-item>
-                    </md-menu-content>
-                </md-menu>
+                <menu></menu>
             </md-menu-bar>        
         </div>
+        <md-toolbar-filler layout="" layout-align="center center" hide show-gt-sm>
+        </md-toolbar-filler>
+        <md-input-container class="search">
+            <md-select name='breed' ng-model="breed._id" placeholder="Select a breed" ng-change="vm.getDogDetail(breed._id)">
+                <md-option value="{{breed._id}}" ng-repeat="breed in vm.dbBreeds"> {{ breed.breed }}</md-option>
+            </md-select>
+        </md-input-container>
     </div>
 </md-toolbar>
 
-<md-toolbar class="md-toolbar-tools sticky" hide show-xs>
+<md-toolbar class="md-toolbar-tools" hide show-xs>
     <md-toolbar-filler layout="" layout-align="center center"></md-toolbar-filler>
     <div class="burger-nav-button yellow" hide show-xs>
-        <input type="checkbox" id="nav-trigger" class="nav-trigger" ng-click="vm.toggleLeft()"/>
-        <label for="nav-trigger"></label>
+        <a href="" ng-click="vm.toggleLeft()"/>
+            <img class="no-border" src="/images/menu.png">
+        </a>
     </div>
-    <a ui-sref='index'><img class="logo-text" src="/images/logo3-long.png"></a>
+    </div>
 </md-toolbar>
 
 <md-sidenav class="md-sidenav-left" md-component-id="left" md-disable-backdrop="" md-whiteframe="4">
-    <md-toolbar>
-        <h1 class="md-toolbar-tools"><img class="logo-text" src="/images/logo3-long.png"></h1>
-    </md-toolbar>
-    <md-content layout-margin="">
+    <div class="main-menu-sidenav" layout-margin="">
         <md-button ng-click="vm.toggleLeft()">Close Menu</md-button>
-        <md-menu-bar layout="column">
-            <md-menu>
-                <button ng-click="$mdMenu.open()">
-                    <i class="mdi mdi-chevron-double-right" md-menu-align-target></i>
-                    Breeds
-                </button>
-                <md-menu-content> 
-                    <md-menu-item>
-                        <md-button ui-sref="breeds({letter: 'A'})">
-                            Alphabetical Listing
-                        </md-button>
-                    </md-menu-item>
-                    <md-menu-divider></md-menu-divider>
-                    <md-menu-item>
-                        <md-button ui-sref="filtered">
-                            Filter List
-                        </md-button>
-                    </md-menu-item>
-                    <md-menu-divider></md-menu-divider>
-                    <md-menu-item>
-                        <form ng-submit="vm.getDogDetail(vm.searchText)">
-                            <md-autocomplete md-selected-item="vm.selectedItem" 
-                                md-autoselect=true
-                                md-no-cache="true"
-                                md-search-text="vm.searchText" 
-                                md-items="item in vm.querySearch(vm.searchText)" md-item-text="item.display" 
-                                md-clear-button="true"
-                                md-select-on-match=true
-                                md-match-case-insenstive=true
-                                md-dropdown-items="10"
-                                md-min-length="0" placeholder="Search for breed..." type="submit">
-                                <md-item-template>
-                                    <span md-highlight-text="vm.searchText" md-highlight-flags="^i">{{item.display}}</span>
-                                </md-item-template>
-                                <md-not-found>
-                                    <span style="font-size: xsmall;">No breeds matching "{{vm.searchText}}" were found.</span>
-                                </md-not-found>
-                            </md-autocomplete>
-                        </form>
-                    </md-menu-item> 
-                </md-menu-content>
-            </md-menu>
-            <md-menu ng-hide="vm.currentUser.isAuthenticated">
-                <button ng-click="$mdMenu.open()">
-                    <i class="mdi mdi-chevron-double-right" md-menu-align-target></i>
-                    Sign In
-                </button>
-                <md-menu-content> 
-                    <md-menu-item>
-                        <md-button ui-sref="signin">
-                            Returning Member
-                        </md-button>
-                    </md-menu-item>
-                    <md-menu-item>
-                        <md-button ui-sref="signup">
-                            New Member
-                        </md-button>
-                    </md-menu-item>
-                </md-menu-content>
-            </md-menu> 
-            <md-menu ng-hide="!vm.currentUser.isAuthenticated">
-                <button ng-click="$mdMenu.open()">
-                    <i class="mdi mdi-chevron-double-right" md-menu-align-target></i>
-                    Account
-                </button>
-                <md-menu-content> 
-                    <md-menu-item>
-                        <md-button ui-sref="account.usercreds">
-                            Log-in Settings
-                        </md-button>
-                    </md-menu-item>
-                    <md-menu-item>
-                        <md-button ui-sref="account.favorites">
-                            Compare Favorite Breeds
-                        </md-button>
-                    </md-menu-item>
-                    <md-menu-item>
-                        <md-button ui-sref="account.rescues">
-                            Show Favorite Rescues
-                        </md-button>
-                    </md-menu-item>
-                </md-menu-content>
-            </md-menu>
-            <md-menu ng-show="vm.currentUser.isAuthenticated && vm.currentUser.isAdmin">
-                <button ng-click="$mdMenu.open()">
-                    <i class="mdi mdi-chevron-double-right" md-menu-align-target></i>
-                    Admin
-                </button>
-                <md-menu-content>
-                    <md-menu-item>
-                        <md-button ui-sref="admin">
-                            Admin Page
-                        </md-button>
-                    </md-menu-item>
-                </md-menu-content>
-            </md-menu> 
-            <md-menu ng-hide="!vm.currentUser.isAuthenticated">
-                <button ng-click="$mdMenu.open()">
-                    <i class="mdi mdi-chevron-double-right" md-menu-align-target></i>
-                    Sign Out
-                </button>
-                <md-menu-content>
-                    <md-menu-item>
-                        <md-button ui-sref="signout">Sure you want to leave?</md-button>
-                    </md-menu-item>
-                </md-menu-content>
-            </md-menu>
+        <md-menu-bar>
+            <menu layout="column"></menu>
         </md-menu-bar> 
-    </md-content>
+    </div>
 </md-sidenav>
 
 <div class="salutation" ng-show="vm.currentUser.isAuthenticated">
-    <h2>Welcome, {{ vm.currentUser.fullName }}!</h2>
+    <strong>Welcome, {{ vm.currentUser.fullName }}!</strong>
 </div>
-
-
 
 

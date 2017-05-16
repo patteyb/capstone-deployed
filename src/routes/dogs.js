@@ -151,12 +151,16 @@ router.delete('/dogs/admin/:id', function(req, res, next) {
  * Returns all dogs beginning with letter */
 router.get('/dogs/breeds/:letter', function(req, res, next) {
     var end;
-    if (req.params.letter === 'W') {
-        end = 'Z';
+    var start;
+    console.log('letter: ', req.params.letter);
+    if (req.params.letter === 'W-Z') {
+        start = 'W';
+        end = 'Zz';
     } else {
+        start = req.params.letter;
         end = req.params.letter + 'zz';
     }
-    Dogs.find({breed: { $gt: req.params.letter, $lt: end }})
+    Dogs.find({breed: { $gt: start, $lt: end }})
         .select('breed imageURL imageRef imageTitle')
         .sort({ breed: 1 })
         .exec(function(err, dogs) {

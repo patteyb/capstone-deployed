@@ -1,18 +1,19 @@
 <div>
-    <toolbar></toolbar>
+  <toolbar></toolbar>
 </div>
 <div class="main">
 
-    <div layout="column">
-        <md-content layout="row" class="md-toolbar-tools" flex layout-wrap layout-align="center start">
-            <a class="button-letter all md-whiteframe-6dp" ui-sref="breeds({letter: ''})">
+    <div layout="column" layout padding layout-margin layout->
+        <md-content>
+        <div layout="row" class="md-toolbar-tools" flex layout-wrap layout-align="center start">
+            <a class="button-letter all md-whiteframe-6dp" ng-click="vm.getBreedsByLetter('')">
                 ALL
             </a> 
-            <a class="button-letter md-whiteframe-6dp" md-theme="dark-teal" ng-repeat="letter in vm.alphabet" ui-sref="breeds({letter: letter })">
+            <a class="button-letter md-whiteframe-6dp" md-theme="dark-teal" ng-repeat="letter in vm.alphabet" ng-click="vm.getBreedsByLetter(letter)">
                 {{ letter }}
             </a>
-       </md-content>
-        <div layout="row" layout-align="center end" flex layout-wrap> 
+        </div>
+        <div layout="row" layout-align="center end" flex layout-wrap hide show-gt-sm> 
             <span ng-show="vm.letter">
                 There
                 <span ng-show="vm.dogs.length==1">is 1 breed </span>
@@ -21,9 +22,12 @@
             </span>
             <span ng-hide="vm.letter">There are {{ vm.dogs.length }} dogs in the database.</span>
         </div>
+        </md-content>
     </div>
-    <dog-card-short></dog-card-short>
 </div>
+
+
+<div ui-view="card"></div>
 
 <footer-bar></footer-bar>
 

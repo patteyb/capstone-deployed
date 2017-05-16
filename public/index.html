@@ -1,22 +1,36 @@
 <!DOCTYPE html>
-<html ng-app="app">
+<html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width", initial-scale=1.0">
-  <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,500' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Cousine' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Annie+Use+Your+Telescope|Open+Sans" rel="stylesheet">
+  <!-- <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,500' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Cousine' rel='stylesheet' type='text/css'> -->
+
   <link href='/styles/vendor.min.css' rel='stylesheet' type='text/css'>
-  <link href='/styles/custom.min.css' rel='stylesheet' type='text/css'>
+  <link href='/styles/style.css' rel='stylesheet' type='text/css'> 
 
   <title>A Dog for Me!</title>
 </head>
-<body>
-  <md-content ng-cloak="">
-    <ui-view></ui-view>
-  </md-content>
+<body ng-app="app" ng-cloak>
+    <div class="background" hide show-gt-xs layout layout-md="column" flex="100">
+        <div layout-align="center center" layout-margin flex="50">
+            <img src="/images/logo3-large.png" class="logo">
+        </div>
+        <div class="tagline" layout="column" layout-align="end end" flex>
+            <div class="tagline-1">Breed Is As Breed Does</div>
+            <div class="tagline-2">Find the perfect breed for you!</div>
+        </div> 
+    </div>
+    <div class="background" hide show-xs>
+      <a ui-sref='index'><img class="logo-text" src="/images/logo3-long.png"></a>
+    </div>
+    <md-content>
+        <div ui-view ng-view></div>
+    </md-content>
 </body>
 
-  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="https://www.youtube.com/iframe_api"></script> 
   <script src="/scripts/vendor.min.js"></script>
   <script src="/scripts/app.js"></script>
 

@@ -1,0 +1,31 @@
+<div ng-model="height" element-size layout="column" layout-margin layout-padding layout-align="center center" flex layout-gt-sm="row">
+    <div flex-xs="100" flex-sm="80" flex-gt-sm="60">
+        <div ng-show="vm.listType=='apartment'" flex>
+            <h1>Best Apartment-Dwelling Dogs</h1>
+            <p>Apartment living can present some challenges for people who want dogs. First off, there's size to consider, particularly if your apartment is small. Then there's the noise factor of a dog. A prodigious barker will not win you many friends among your neighbors. With no access to a yard, the better choice for apartment life is a dog that doesn't require lots of activity. These dogs fit the bill nicely: not too big, not too noisy, and not needing lots of exercise.</p>
+        </div>
+
+        <div ng-show="vm.listType=='active'" flex>
+            <h1>Best Dogs for People on the Go</h1>
+            Dogs are generally excited to do anything with you, but some dogs love &ndash; indeed, thrive on &ndash; lots of activity. In fact, these dogs will do best with owners who can keep their bodies and minds engaged with some sort of exercise or training. From catching frisbees to obedience training to agility competitions, these dogs are the athletes of the dog world. Don't exercise these dogs at your own peril! A bored dog will look for their own fun, and probably not to your liking.
+        </div>
+        <div ng-show="vm.listType=='lowMaintenance'" flex>
+            <h1>Low Maintenance Dogs</h1>
+            These are your wash-and-wear dogs. No special grooming is required for this group, outside of an occasional bath and nail trims. When you just can't stand the smell any more, throw them in the bathtub or use the outdoor hose, lather up your favorite shampoo, and presto! You have sweet-as-candy canine once again. And with their short coats, they will be dry before you know it.
+        </div>
+        <div ng-show="vm.listType=='family'" flex>
+            <h1>Best Family Dogs</h1>
+            Most dogs do well in a family setting, but these dogs have the reputation of being incredibly loyal, gentle, patient and affable. You won't find any delicate flowers in this group. They are sturdy and steady dogs, easily shrugging off the rough play and noisy commotion of young children. These dogs tend to want to please their humans, so they typically respond well to training. Keep in mind that the best-behaved dogs have received, and continue to receive, some level of obedience training. If you want a dog that doesn't jump up on your small child, be prepared to work on that behavior, no matter the dog. But these dogs could give you a leg up on instilling manners.
+        </div>
+        <div ng-show="vm.listType=='guard'" flex>
+            <h1>Best Guard Dogs</h1>
+            Most any dog can be a watchdog, barking at anything that comes into the yard. But some dogs go beyond alerting you to the UPS truck. These dogs have been breed, some for centuries, to guard their property and family. Particular breeds have been to one purpose: to guard livestock. Look to the Kuvasz, Great Pyrenees, and Komondor to take care of your herd of sheep, cows, chickens, goats...you name it. Other breeds develop strong bonds with their owners, such as the German Shepherd and Rottweiler, and they will defend you to the death, if needed.
+        </div>
+        <div ng-show="vm.listType=='quiet'" flex>
+            <h1>Quietest Dogs</h1>
+            So you love dogs, but don't want to put up with all that barking and yipping? Then check out this group. All dogs vocalize to some degree, but these dogs have a reputation for being more laid back than other breeds. They are more likely to be in your lap or dozing in a spot of sun than prowling the fence line.
+        </div>
+    </div>
+</div>
+
+<dog-card-short></dog-card-short>

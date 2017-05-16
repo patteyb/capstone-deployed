@@ -1,0 +1,86 @@
+
+<md-button ui-sref="index" aria-label="Breeds" ng-show="vm.page !== 'Home'">
+    <i class="mdi mdi-chevron-double-right"></i>
+        Home
+</md-button>  
+<md-menu>
+    <md-button class="menu" ng-click="$mdMenu.open()" aria-label="Breeds">
+        <i class="mdi mdi-chevron-double-right"></i>
+            Breeds
+    </md-button>
+    <md-menu-content> 
+        <md-menu-item>
+            <md-button ui-sref="breeds({letter: 'A'})">
+                Alphabetical Listing
+            </md-button>
+        </md-menu-item>
+        <md-menu-divider></md-menu-divider>
+        <md-menu-item>
+            <md-button ui-sref="filtered">
+                Filter List
+            </md-button>
+        </md-menu-item>
+        <md-menu-divider></md-menu-divider>
+        <md-menu-item>
+            <md-button ui-sref="bestOf({ list: 'apartment' })">
+                Best Breeds Lists
+            </md-button>
+        </md-menu-item>
+    </md-menu-content>
+</md-menu>
+<md-menu ng-hide="vm.currentUser.isAuthenticated">
+    <md-button ng-click="$mdMenu.open()">
+        <i class="mdi mdi-chevron-double-right"></i>
+        Sign In
+    </md-button>
+    <md-menu-content> 
+        <md-menu-item>
+            <md-button ui-sref="signin">
+                    Returning Member
+                </md-button> 
+            </md-menu-item>
+        <md-menu-item>
+            <md-button ui-sref="signup">
+                New Member
+            </md-button> 
+        </md-menu-item>
+    </md-menu-content>
+</md-menu> 
+<md-menu ng-show="vm.currentUser.isAuthenticated">
+    <md-button ng-click="$mdMenu.open()">
+        <i class="mdi mdi-chevron-double-right"></i>
+        Account
+    </md-button>
+    <md-menu-content> 
+        <md-menu-item>
+            <md-button ui-sref="account.usercreds">
+                Log-in Settings
+            </md-button>
+        </md-menu-item>
+        <md-menu-item>
+            <md-button ui-sref="account.favorites">
+                Compare Favorite Breeds
+            </md-button>
+        </md-menu-item>
+        <md-menu-item>
+            <md-button ui-sref="account.rescues">
+                Show Favorite Rescues
+            </md-button>
+        </md-menu-item>
+    </md-menu-content>
+</md-menu>
+<md-button ui-sref="admin" ng-show="vm.currentUser.isAuthenticated && vm.currentUser.isAdmin">
+    <i class="mdi mdi-chevron-double-right"></i>
+    Admin
+</md-button>
+<md-menu ng-show="vm.currentUser.isAuthenticated">
+    <md-button ng-click="$mdMenu.open()">
+        <i class="mdi mdi-chevron-double-right" md-menu-align-target></i>
+        Sign Out
+    </md-button>
+    <md-menu-content>
+        <md-menu-item>
+            <md-button ui-sref="signout">Sure you want to leave?</md-button>
+        </md-menu-item>
+    </md-menu-content>
+</md-menu>

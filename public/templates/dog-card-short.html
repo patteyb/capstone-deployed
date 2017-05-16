@@ -1,16 +1,17 @@
 <!-- CARD CONTENT -->
 <div flex="100" ng-model="height" element-size>
-    <div layout="row" layout-align="center center" layout-padding>
-        Click on the name to view more details on the breed.
+    <div class="best-of-directions" layout="row" layout-align="center center" layout-margin layout-padding>
+        Click on the BREED NAME to view more details on the breed.
     </div>
-    <div ng-show="vm.currentUser.isAuthenticated" layout="row" layout-align="center center" layout-padding>
-        <h2>Click on the paw to add that breed to your list of favorites.</h2>
+    <div class="breeds-directions" ng-show="vm.currentUser.isAuthenticated" layout="row" layout-align="center center" layout-margin>
+        <img src="/images/paw_gold.png"> indicates a favorite breed.
+        Add or remove a breed from your list by clicking on the PAW in front of a breed name.
     </div>
-    <div ng-show="!vm.currentUser.isAuthenticated" layout="row"  layout-align="center center" layout-padding>
-        <h2>SIGN IN or SIGN UP to save breeds and rescues to your personal favorites list.</h2>
-    </div>
+    <div class="breeds-directions" ng-show="!vm.currentUser.isAuthenticated" layout="row"  layout-align="center center" layout-margin>
+        SIGN IN or SIGN UP to save breeds and rescues to your personal favorites list.
+    </div> 
     <md-content layout="row" layout-align="center" layout-wrap layout-margin layout-padding>
-        <md-card class="breed-card" flex="15" ng-repeat="dog in vm.dogs">  
+        <md-card class="breed-card" flex="15" ng-repeat="dog in vm.dogs" ng-if="vm.dogs">  
             <md-card-content>
                 <div>
                     <a ng-href="{{ dog.imageRef }}" title="{{ dog.imageTitle }}">

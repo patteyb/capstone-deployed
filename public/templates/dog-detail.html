@@ -1,12 +1,12 @@
 <!-- CARD CONTENT -->
 <div>
-     <toolbar></toolbar>
+    <toolbar></toolbar>
 </div>
 <md-content class="main" ng-model="height" element-size layout="row" layout-wrap >
      <div layout="column" flex="25" layout-margin>
         <div>
             <div layout-padding hide show-gt-md>
-                <a href="http://www.petfinder.com"><img src="http://www.petfinder.com/banner-images/widgets/23.jpg" border="0" alt="Pet Adoption" /></a>
+                <a href="http://www.petfinder.com" target="_blank"><img src="http://www.petfinder.com/banner-images/widgets/23.jpg" border="0" alt="Pet Adoption" /></a>
             </div>
             <div ng-hide="vm.haveRescues"> 
                 <p class="center"><md-button ng-click="vm.getAdoptables(vm.dog.breed)" class="md-raised md-primary md-ink">Find Rescues</md-button></p>
@@ -44,26 +44,26 @@
     <div class="md-padding" flex="50" flex-xs="100" flex-sm="100" flex-md="100">
         <div layout="row">
             <md-card flex="100">  
-                <md-card-content ng-if="vm.dog.imageURL2">
+                <md-card-content ng-if="vm.dog.imageURL2" layout-align="center">
                     <img ng-src="{{ vm.dog.imageURL2 }}" alt="{{ vm.dog.breed }}" ng-hide="showStd">
-                    <h2 class="md-title title"> {{ vm.dog.breed }}</h2>
+                    <h2 class="center"> {{ vm.dog.breed }}</h2>
                 </md-card-content>
                 <md-card-content ng-if="!vm.dog.imageURL2">
                     <a ng-href="{{ dog.imageRef }}" title="{{ dog.imageTitle }}">
                         <img ng-src="{{ vm.dog.imageURL }}" alt="{{ vm.dog.breed }}" ng-hide="showStd">
                     </a>
-                    <h2 class="md-title title"> {{ vm.dog.breed }}</h2>
+                    <h2> {{ vm.dog.breed }}</h2>
                 </md-card-content>
             </md-card>
-            </div>
+        </div>
         <div layout="row" layout-xs="column" layout-sm="column" layout-md="column">
             <md-card flex="100" layout="column" flex-md="45" flex-lg="45" flex="45">
                 <md-card-content flex>
                     <div class="center">
                         <div layout="row">
-                            <div flex="30"><h4>Energy</h4></div>
-                            <div flex="30"><h4>Size</h4></div>
-                            <div flex="30"><h4>Popularity</h4></div>
+                            <div flex="30"><p class="detail-heading">Energy</p></div>
+                            <div flex="30"><p class="detail-heading">Size</p></div>
+                            <div flex="30"><p class="detail-heading">Popularity</p></div>
                         </div>
                         <div layout="row">
                             <div class="nudge-down" flex="30"><i class="mdi mdi-48px {{ vm.dog.energyLevelClass }}"></i></div>
@@ -83,7 +83,8 @@
                             <p><img class="icon left" ng-src="/images/{{ vm.dog.groomIcon }}Groom.png">
                         </div>
                         <div flex="75">
-                            <p><h2>Grooming</h2>{{ vm.dog.grooming }}</p>
+                            <p class="detail-heading">Grooming</p>
+                            {{ vm.dog.grooming }}
                         </div>
                     </div>
                     <div layout="row">
@@ -91,7 +92,8 @@
                             <p><img class="icon left" ng-src="/images/{{ vm.dog.exerciseIcon }}Activity.png">
                         </div>
                         <div flex="75">
-                            <p><h2>Exercise</h2>{{ vm.dog.exercise }}</p>
+                            <p class="detail-heading">Exercise</p>
+                            {{ vm.dog.exercise }}
                         </div>
                     </div>
                     <div layout="row">
@@ -99,7 +101,8 @@
                             <p><img class="icon left" ng-src="/images/health.png">
                         </div>
                         <div flex="75">
-                            <p><h2>Health</h2>{{ vm.dog.health }}</p>
+                            <p class="detail-heading">Health</p>
+                            {{ vm.dog.health }}
                         </div>
                     </div>
                 </md-card-content>
@@ -108,8 +111,8 @@
                 <md-card-content  layout-padding flex>
                     <div class="center" layout="row">
                         <md-card md-theme="dark-teal" md-whiteframe="1" layout-fill>
-                            <md-card-content>
-                                <h2>{{ vm.dog.shortDesc }}</h2>
+                            <md-card-content class="short-desc">
+                                {{ vm.dog.shortDesc }}
                             </md-card-content>
                         </md-card>
                     </div>
@@ -135,14 +138,13 @@
         </div>
     </div>
     <div class="md-padding" flex="20" flex-xs="100" flex-sm="100" flex-md="100">
-        <div layout="row" layout-align="center center">
+        <div layout="row" layout-align="center center" layout-padding>
             <md-button class="md-warn md-raised md-ink" ng-click="vm.toggleFavorite(vm.dog)" aria-label="toggle Favorite" >
-                <h3 ng-show="vm.dog.favClass == 'paw fav-on'">Remove from Favorites</h3>
-                <h3 ng-show="vm.dog.favClass == 'paw fav-off'">Save to Favorites</h3>
+                <span style="color: white;" ng-show="vm.dog.favClass == 'paw fav-on'">Remove from Favorites</span>
+                <span style="color: white;" ng-show="vm.dog.favClass == 'paw fav-off'">Save to Favorites</span>
             </md-button>
         </div>
-        <div class="videowrapper" ng-repeat="video in vm.videos" layout="row" layout-padding>
-            <!-- <youtube-video video-id="video.id.videoId"></youtube-video> -->
+        <div class="videowrapper" ng-repeat="video in vm.videos" layout="row">
             <iframe ng-src="{{ vm.getIframeSrc(video.id.videoId) }}" frameborder="0" allowfullscreen></iframe> 
         </div>
         <div layout="column" flex-sm="row" flex-md="row" flex-xs="row" layout-wrap>
@@ -216,7 +218,7 @@
                     </md-chip>
                 </md-chips>
             </div>
-        </div>
+        </div> 
     </div>
     
 </md-content>

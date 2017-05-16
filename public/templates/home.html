@@ -1,27 +1,26 @@
-<div>
+<div style="min-height: 49px;">
   <toolbar></toolbar>
 </div>
 <md-content>
 <div class="main" ng-model="height" element-size>
-  <div layout="row" flex="90" flex-offset="5" layout-sm="column" layout-xs="column" >
+  <div layout="column" flex="90" flex-offset="5" layout-gt-md="row" >
       
-      <section layout="column" class="intro" flex layout-margin flex-order-gt-sm="1">
+      <section layout="column" class="intro" flex="90" flex-gt-md="60" layout-margin flex-order-gt-md="1">
         <div class="tabsdemoDynamicHeight">
           <md-content>
-            <md-card>
-              <md-card-content class="md-padding tab1">
-                <img src="/images/tab1-dogface.jpg" alt="" hide show-gt-xs>
-                <span class="md-headline teal">You long for a dog.</span>
-                <p>Okay, so you've been thinking about this for a while now.</p> 
-                <p>A furry friend to help you through those episodes of <em>Walking Dead</em> you love to binge. Or maybe you love the outdoors and would love a hiking companion. Or you need a good watchdog and friend for your children.</p>
+            <div class="tab1">
+                <img src="/images/tab1-dogface.jpg" alt="">
+                <div class="large-headline"><h1>You long for a dog.</h1></div>
+                <div>
+                  <p>Okay, so you've been thinking about this for a while now.</p> 
+                  <p>A furry friend to help you through those episodes of <em>Walking Dead</em> you love to binge. Or maybe you love the outdoors and would love a hiking companion. Or you need a good watchdog and friend for your children.</p>
 
-                <p>Whatever your reason, congratulations on making the stupendous decision to welcome a dog into your life! Now you need to research what kind of dog would work best for you and your family. Would a couch-potato pooch fit your lifestyle best, or a dog that loves to be on the go? Will you have the time to take your dog for a daily walk, or do you need a dog that can meet his exercise needs running around the house? Noise levels, grooming requirements, friendliness...so many things to consider.</p>
-              </md-card-content>
-            </md-card>
-            <md-card>
-                <md-card-content class="md-padding tab2">
+                  <p>Whatever your reason, congratulations on making the stupendous decision to welcome a dog into your life! Now you need to research what kind of dog would work best for you and your family. Would a couch-potato pooch fit your lifestyle best, or a dog that loves to be on the go? Will you have the time to take your dog for a daily walk, or do you need a dog that can meet his exercise needs running around the house? Noise levels, grooming requirements, friendliness...so many things to consider.</p>
+                </div>
+            </div>
+            <div class="tab2">
                   <img src="/images/tab2-puppyboot.png" alt="" hide show-gt-xs>
-                  <span class="md-headline teal">Does Breed Matter?</span>
+                  <h3>Does Breed Matter?</h3>
                   <p>First things first, you need to figure out what breed of dog makes the best sense for you. Dogs will vary within a breed, but you reduce the chances of getting a squirrel-chasing barker when you really wanted a low-key lapdog if you do some research. And here's where ADogforMe.com can help. Click on <i class="mdi mdi-chevron-double-right"></i> BREEDS and begin the fun journey of finding the perfect dog for you. You can read all about different breeds, watch videos, and find rescue dogs within your area.</p>
 
                   <p>Check out <a href="https://pethelpful.com/dogs/Choosing-a-Dog-Why-Breed-Matters" target="_blank">this article</a> on why knowing something about dog breeds can help in your search for the best companion for your lifestyle.
@@ -29,43 +28,32 @@
                   <p>If you have some idea of what criteria your perfect dog friend would meet, then select click <i class="mdi mdi-chevron-double-right"></i> BREEDS from the menu and select FILTER LIST to find dog breeds that meet various selection criteria.</p>
 
                   <p>And if you would like to save dog breeds to a favorites list, or save and track rescue dogs, then SIGN UP for your own personal account. You can save your research and return back to it at your leisure.</p>
-                </md-card-content>
-              </md-card>
-              <md-card>
-                <md-card-content class="md-padding tab3">
-                  <span class="md-headline teal">Buy or Rescue?</span>
-                  <p>In a perfect world, this wouldn't even be a question to consider. The reality, however, is that there are many, many dogs out there needing a home. Dogs of every spot, size, and temperment just waiting for a new home!</p>
+              </div>
+              <div class="tab3">
+                  <h3>Buy or Rescue?</h3>
+                  <p><img src="/images/tab3-pug.jpg" alt="" hide show-gt-xs>In a perfect world, this wouldn't even be a question to consider. The reality, however, is that there are many, many dogs out there needing a home. Dogs of every spot, size, and temperment just waiting for a new home!</p>
 
-                  <p><img src="/images/tab3-pug.jpg" alt="" hide show-gt-xs>What? You want a particular breed, and don't want to risk getting an unhealthy or damaged dog? Purchasing from a breeder is no guarantee of health or perfect temperment. There are many reputable breeders out there, but there are irreputable ones as well. Buyer beware and do your research!</p>
+                  <p>What? You want a particular breed, and don't want to risk getting an unhealthy or damaged dog? Purchasing from a breeder is no guarantee of health or perfect temperment. There are many reputable breeders out there, but there are irreputable ones as well. Buyer beware and do your research!</p>
 
                   <p>And what about that adorable pup in the store window? Well, they need homes also. I would caution you against an impulse buy. Bringing a dog into your life is about long-term commitment and responsibility and shouldn't be an off-the-cuff decision. But if you absolutely fall in love with a bouncy fuzzface, then don't let your friends make you feel guilty about not getting a shelter dog.</p>
 
                   <p>I've purchased a dog from a store, bought from breeders, and rescued dogs. They've all had their personality quirks and health concerns, no matter where I found my new companion. The trick is to do your research, talk to the breeder, store or shelter staff, and, if you can, spend time visiting your potential new friend.</p>
-                </md-card-content>
-              </md-card>
+              </mdiv>
           </md-content>
         </div>
       </section> <!-- end section -->
 
       <section layout="column" flex layout-padding layout-margin flex-order-gt-sm="2">
-        <div hide show-gt-sm layout="center center" layout-md="column">
-          <div flex="60"><img src="/images/logo3-large.png" class="logo"></div>
-          <div layout="column" layout-align="end start" flex>
-            <div class="md-headline">Breed Is As Breed Does</div>
-            <div class="md-title teal"> Find the perfect breed for you!</div>
-          </div>
-        </div> 
         <md-card>
             <md-card-content class="md-padding tab4">
               <img src="/images/tab4-doghose.png" alt="" hide show-gt-xs>
-              <span class="md-headline teal">Let's Begin!</span>
+              <h3>Let's Begin!</h3>
               <ol>
                 <li>Sign up for your own personal account.</li>
                 <li>Click on BREEDS to access information on dog breeds.</li>
                   <ul>
                     <li>Click on individual cards to access detailed breed information.</li>
                     <li>Or, Select BREEDS and then FILTERS to filter dogs based on your criteria.</li>
-                    <li>Click on the dog paw to save a dog to your favorites list.</li>
                   </ul>
                 <li>To compare breeds that you have selected as favorites, click on MY ACCOUNT.</li>
                 <li>While you are reading about a particular breed, you may choose to see rescue dogs of that breed in your area. You may save a rescue dog to your own personal list, which you can access on the MY ACCOUNT page.</li>
@@ -73,36 +61,41 @@
             </md-card-content>
         </md-card> 
         <md-card>
-          <md-card-content>
-            <div flex-order-sm="3">
-              <h2 class="md-title">Have a specific need? Check out our best-of lists:</h2>
-              <section layout="row" layout-gt-sm="column">
-                <div layout="column" layout-margin layout-wrap layout-gt-sm="row">
-                  <a ui-sref="bestOf({ list: 'apartment' })" ng-click="vm.getBestOf('apartment')">
-                    <i class="mdi mdi-paw"></i> Best Apartment-Dwelling Dogs
-                  </a>
-                  <a ui-sref="bestOf({ list: 'active' })" ng-click="vm.getBestOf('active')">
-                    <i class="mdi mdi-paw"></i> Best Dogs for People on the Go
-                  </a>
-
-                  <a ui-sref="bestOf({ list: 'lowMaintenance' })" ng-click="vm.getBestOf('lowMaintenance')">
-                    <i class="mdi mdi-paw"></i> Best Low Maintenance Dogs
-                  </a>
-              
-                  <a ui-sref="bestOf({ list: 'family' })" ng-click="vm.getBestOf('family')">
-                    <i class="mdi mdi-paw"></i> Best Family Dogs
-                  </a>
-                  <a ui-sref="bestOf({ list: 'guard' })" ng-click="vm.getBestOf('guard')">
-                    <i class="mdi mdi-paw"></i> Best Guard Dogs
-                  </a>
-        
-                  <a ui-sref="bestOf({ list: 'quiet' })" ng-click="vm.getBestOf('quiet')">
-                    <i class="mdi mdi-paw"></i> Quietest Dogs
-                  </a>
-                </div>
-              </section>
+          <md-card-content class="card-bg">  
+              <div class="best-of-section" layout="column" layout-padding layout-align="center start" flex-order-sm="3">
+                  <h4 class="gold-text">Have a specific need?<br> Check out our Best lists:</h4>
+                  <div flex>
+                    <a ui-sref="bestOf({ list: 'apartment' })">
+                      <i class="mdi mdi-paw"></i> Best Apartment-Dwelling Dogs
+                    </a>
+                  </div>
+                  <div flex>
+                    <a ui-sref="bestOf({ list: 'active' })">
+                      <i class="mdi mdi-paw"></i> Best Dogs for People on the Go
+                    </a>
+                  </div>
+                  <div flex>
+                    <a ui-sref="bestOf({ list: 'lowMaintenance' })">
+                      <i class="mdi mdi-paw"></i> Best Low Maintenance Dogs
+                    </a>
+                  </div>
+                  <div flex>
+                    <a ui-sref="bestOf({ list: 'family' })">
+                      <i class="mdi mdi-paw"></i> Best Family Dogs
+                    </a>
+                  </div>
+                  <div flex>
+                    <a ui-sref="bestOf({ list: 'guard' })">
+                      <i class="mdi mdi-paw"></i> Best Guard Dogs
+                    </a>
+                  </div>
+                  <div flex>
+                    <a ui-sref="bestOf({ list: 'quiet' })">
+                      <i class="mdi mdi-paw"></i> Quietest Dogs
+                    </a>
+                  </div>
             </div>
-          </md-card-content>
+          </md-card-content> 
         </md-card>
 
         <md-card class="section4 pink" ng-hide="vm.hideRescue || !vm.randomRescue" hide show-gt-xs>
@@ -116,14 +109,17 @@
               <div ng-if="vm.randomRescue.media.photos.photo[2].$t" >
                 <img style="width: 200px;" ng-src="{{ vm.randomRescue.media.photos.photo[2].$t}}" alt="Random rescue dog">
               </div>
+              <div ng-if="!vm.randomRescue.media.photos.photo[2].$t">
+                <img style="width: 200px;" src="/images/waggingDog.png" alt="Random rescue dog">
+              </div>
               <div> 
                 {{ vm.randomRescue.name.$t }} needs a new home!<br><br>
                 {{ vm.randomRescue.age.$t}}, 
                 <span ng-if="vm.randomRescue.sex.$t=='M'"> Male<br><br></span>
                 <span ng-if="vm.randomRescue.sex.$t=='F'"> Female<br><br></span>
                 {{ vm.randomRescue.breedStr }}<br><br>
-                <a href="" ng-click="vm.showAdoptable($event, vm.randomRescue)">Find out more about this cutie-pie.</a>
-                <a href="" ng-click="vm.getShelters()"><h2 class="md-headline">Find a Shelter near you!</h2></a>
+                <a href="" ng-click="vm.showAdoptable($event, vm.randomRescue)"><i class="mdi mdi-paw"></i> Find out more about this cutie-pie.</a><br>
+                <a href="" ng-click="vm.getShelters()"><i class="mdi mdi-home"></i> Find a Shelter near you!</a>
               </div>
             </div>
           </md-card-content>

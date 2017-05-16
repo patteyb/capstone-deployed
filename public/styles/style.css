@@ -1,0 +1,699 @@
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}
+
+body {
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-size: 0.985rem;
+  color: #555;
+  line-height: 140%;
+  overflow: auto;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: "Annie Use Your Telescope", cursive;
+  color: teal;
+  line-height: normal;
+}
+
+h1 {
+  font-size: 60px;
+}
+
+h2 {
+  font-size: 2.5rem;
+  margin: 40px 0 0px;
+  padding: 0;
+}
+
+h3 {
+  font-size: 2rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+h5 {
+  font-size: 1rem;
+}
+
+.gold-text {
+  color: #ffc107;
+}
+
+
+/* Page animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+@keyframes slideOutLeft {
+    to { transform: translateX(-100%); }
+}
+
+.ng-enter { 
+  animation: fadeIn 0.5s both ease-in; 
+  z-index: 8888; 
+}
+
+
+/* STYLES FOR MENUS */
+
+md-toolbar {
+  height: 72px;
+}
+
+.yellow {
+  background-color: #ffc107;
+}
+
+.main-menu .md-button {
+  font-size: 16px;
+  background: #ffc107;
+  color: white;
+}
+
+.main-menu .md-button:hover {
+  color: #333;
+}
+
+.main-menu-sidenav .md-button {
+  font-size: 16px;
+  color: #333;
+  text-align: left;
+  width: 150px;
+}
+
+
+/* GENERAL STYLES */
+.main {
+  margin-bottom: 20px;
+}
+
+.tagline-1 {
+  font-family: "Annie Use Your Telescope", cursive;
+  color: teal;
+  line-height: normal;
+  font-size: 2rem;
+  margin-bottom: 0;
+}
+
+.tagline-2 {
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 0;
+}
+
+md-toast.md-success-toast-theme div.md-toast-content {
+    background-color: orange !important;
+}
+
+.spacer {
+  height: 10px;
+}
+
+.page-title {
+  color: teal;
+  font-family: "Annie Use Your Telescope", cursive;
+  font-size: 2rem;
+  margin-left: 20px;
+  padding: 0;
+}
+
+.center {
+  text-align: center;
+}
+
+a {
+  color: #00B7FF;
+}
+
+img {
+  width: 100%;
+  border-radius: 2px;
+  box-shadow: 0px 4px 4px goldenrod;
+}
+
+md-card {
+  border-radius: 2px;
+  box-shadow: 4px 4px 4px #777;
+}
+
+.breed-card {
+  min-width: 250px;
+}
+
+
+.desc {
+  display: inline;
+}
+
+.search-box {
+  background-color: goldenrod;
+}
+
+.footer {
+  font-size: 12px;
+  width: 100%;
+  height: 65px;
+  background-color: #ffc107;
+}
+
+.icon {
+  box-shadow: unset;
+  margin-right: 5px;
+  text-align: center;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.icon-small {
+  width: 48px;
+}
+
+.icon-medium {
+  width: 60px;
+}
+
+.icon-small2 {
+  width: 20%;
+}
+
+.nudge-down {
+  -ms-transform: translateY(10px); /* IE 9 */
+  -webkit-transform: translateY(10px); /* Safari */
+  transform: translateY(10px);
+}
+
+.energy-level {
+  transform: translateY(-15px);
+}
+
+.health {
+  transform: translateX(22px);
+}
+
+.left {
+  float: left;
+}
+
+.mdi {
+  padding: 0;
+  margin: 0;
+}
+
+.center {
+  text-align: center;
+}
+
+.title {
+  color: teal;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.large-headline {
+  margin: 20px 0 30px;
+  padding-top: 15px;
+}
+.dog-desc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: teal;
+  height: 42px;
+  font-size: 0.8rem;
+  color: white;
+}
+
+.thumbnail {
+  display: inline-block;
+  width: 95px;
+  border-radius: 2px;
+  box-shadow: 1px 1px 1px #222;
+}
+
+.md-button:hover {
+  background-color: #222;
+}
+
+.dog-more-info {
+  line-height: 20px;
+}
+
+a:hover {
+  color: orange;
+}
+
+md-sidenav, 
+md-sidenav.md-locked-open,
+md-sidenav.md-closed.md-locked-open-add-active {
+  width: 430px;
+  min-width: 430px;
+  max-width: 430px;
+}
+
+.card-title {
+  text-align: center;
+  color: darkturquoise;
+}
+
+.videowrapper {
+  position: relative;
+  padding-bottom: 56.25%;  /** 16:9 */
+  padding-top: 25px;
+  height: 0;
+  margin-bottom: 20px;
+}
+
+.videowrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.teal {
+  color: teal;
+  font-weight: bold;
+}
+
+.inline-right {
+  display: inline-block;
+  align-content: right;
+}
+
+a {
+  color: teal;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.warning {
+  color: firebrick;
+}
+
+.wallpaper {
+  background-color: #F3F3F1;
+  background-image: url('/images/signin.jpg');
+  background-repeat:no-repeat;
+  background-size:contain;
+  background-position:center;
+}
+
+.signin {
+  width: 250px;
+  min-height: 80vh;
+}
+
+/* Styles for Search Box */
+.search {
+  margin-right: 30px;
+}
+
+/** Styles for Home Page */
+.salutation {
+  text-align: right;
+  margin-right: 20px;
+}
+.logo {
+  box-shadow: none;
+  width: 300px;
+}
+
+.background {
+  background: url("/images/farmer.png");
+}
+
+.card-bg {
+  background: url("/images/pawPrintBG.jpg") repeat-y left, url("/images/pawPrintBG.jpg") repeat-y right;
+} 
+
+.best-of-section {
+  padding-left: 160px;
+  transform: translateY(-20px);
+}
+
+.tagline {
+  margin: 0 10px 10px 0;
+}
+
+.inline {
+  display: inline-block;
+  width: 60px;
+}
+
+.tiny {
+  width: 40px;
+}
+
+.no-border {
+  box-shadow: none;
+  border: none;
+}
+
+.img-logo {
+  box-shadow: none;
+  shape-outside: square(50%);
+  shape-image-threshold: 0.5;
+  float: right;
+  width: 394px;
+  height: 202px;
+}
+
+.logo-text {
+  box-shadow: none;
+  display: inline-block;
+  width: 300px;
+  margin: 8px 50px 0px 30px;
+}
+
+.tabsdemoDynamicHeight md-content {
+  background-color: transparent !important; }
+  .tabsdemoDynamicHeight md-content md-tabs {
+    background: #f6f6f6;
+    border: 1px solid e1e1e1; }
+    .tabsdemoDynamicHeight md-content md-tabs md-tabs-wrapper {
+      background: white; }
+  .tabsdemoDynamicHeight md-content h1:first-child {
+    margin-top: 0; }
+
+.tab1 img {
+  box-shadow: none;
+  width: 400px;
+  height: 282px;
+  float: left;
+  shape-outside: square(50%);
+  shape-image-threshold: 1.0;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.tab2 img {
+  box-shadow: none;
+  width: 400px;
+  height: 383px;
+  float: right;
+  shape-outside: url("/images/tab2-puppyboot.png");
+  shape-image-threshold: 0.5;
+}
+
+.tab3 img {
+  box-shadow: none;
+  width: 200px;
+  margin-right: 10px;
+  float: left;
+  padding-right: 5px;
+}
+
+.tab4 img {
+  box-shadow: none;
+  width: 400px;
+  height: 297px;
+  float: right;
+  shape-outside: ellipse(10%);
+  shape-image-threshold: 0.5;
+}
+
+.pink {
+  background-color: mistyrose;
+}
+
+.teal {
+  color: teal;
+}
+
+.section1 {
+  width: 100%;
+  background-color: cornsilk;
+  text-align: center;
+}
+
+.section2 {
+  width: 100%;
+  background-color: lavender;
+  text-align: center;
+}
+
+.section3 {
+  width: 100%;
+  background-color: aliceblue;
+  text-align: center;
+}
+
+.section4 {
+  background: mistyrose;
+}
+.section4 .md-title {
+  background: lightpink;
+  height: 27px;
+  text-align: center;
+}
+
+.section1 .md-title,
+.section2 .md-title,
+.section3 .md-title {
+  margin-bottom: 10px;
+}
+
+/** Styles for Breeds Page */
+
+.button-letter {
+  margin: 4px;
+  min-width: 25px;
+  background-color: lightseagreen;
+  text-align: center;
+  cursor: pointer;
+  cursor: hand;
+}
+
+.all {
+  background-color: cyan;
+  margin-right: 5px;
+}
+
+.breeds-directions img {
+  width: 20px;
+  box-shadow: none;
+  display: inline-block;
+  transform: rotate(-45deg); 
+  -ms-transform: rotate(-45deg); 
+  -webkit-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+}
+
+/* STYLES FOR BREED DETAIL PAGE */
+
+.short-desc {
+  color: white;
+  font-weight: bold;
+}
+
+.detail-heading {
+  font-family: "Annie Use Your Telescope", cursive;
+  color: teal;
+  font-size: 1.5rem;
+  padding: 0;
+  margin: 27px 0 12px;
+  font-weight: bold;
+}
+
+
+/** Styles for User Account Page */
+.settings {
+  border-bottom: 0.5px solid teal;
+}
+
+.no-overflow {
+  overflow: hidden;
+}
+
+.save-cancel {
+  transform: translateY(30px);
+}
+
+.rescue-card {
+  max-width: 850px;
+}
+
+/** Styles for Admin Page */
+.user-list {
+  list-style-type: none;
+  list-style-position: inside;
+  padding: 0;
+  margin-left: 0;
+}
+
+.list-element:nth-of-type(2n) {
+  background: azure;
+}
+
+
+.top-marg-20 {
+  margin-top: 20px;
+}
+
+.fav-table {
+  border: none !important;
+  border-collapse: collapse;
+}
+
+.fav-table th {
+  padding: 0 10px;
+  color: teal;
+  background-color: lavender;
+}
+
+.fav-table td {
+  padding: 10px 10px 0;
+}
+
+.fav-table tr:nth-child(2n) {
+  background: azure;
+}
+
+.fav-table img {
+  width: 100px;
+  box-shadow: none;
+}
+
+.fav-sort {
+  font-size: 11px;
+  padding: 0;
+  margin: 0;
+}
+
+.fav-sort md-radio-button {
+  display: inline-block;
+  padding-right: 15px;
+}
+
+md-radio-button .small-font {
+  font-size: 11px;
+}
+
+.red {
+  color: firebrick;
+}
+
+/** Styles for Best-Of Page */
+.best-of img {
+  width: 100px;
+}
+
+.best-of ul {
+  list-style-type: none;
+}
+
+.desc {
+  text-align: center;
+}
+
+/** For dialog */
+iframe {
+  margin: 0;
+  padding: 0;
+  height: 600px;
+}
+
+/* styles the validation errors */
+.validation--errors--label {
+  color: teal;
+  font-size: 30px;
+}
+.validation-errors ul {
+  color: teal;
+  padding: 15px 0 40px 10px;
+}
+
+/* styles for favorite paw */
+.paw,
+.fav-off,
+.fav-on {
+  width: 40px;
+  height: 38px;
+  box-shadow: none;
+  transform: rotate(-45deg); 
+  -ms-transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+}
+.fav-off,
+.fav-on:hover {
+  background: url("/images/paw_black.png") no-repeat;
+}
+
+.fav-on, 
+.fav-off:hover {
+  background: url("/images/paw_gold.png") no-repeat;
+}
+
+.fav {
+  color: teal;
+  background-color: wheat;
+  padding-left: 10px;
+}
+
+/* styles for rescues */
+
+.rescue-on {
+  display: block;
+  color: teal;
+  font-weight: bold;
+  font-size: 10px;
+}
+
+.rescue-on:before {
+  content: url("/images/check-circle.png");
+  height: 10px;
+}
+
+.rescue-off {
+  display: none;
+}
+
+.rescue-off {
+  content: "";
+}
+
+.rescue-heading {
+  color: teal;
+  font-weight: bold;
+}
+
+.main-photo {
+  width: 100%;
+}
+
+.photo {
+  width: 50%;
+  box-shadow: none;
+}
+
+/** MEDIA QUERIES */
+
+@media only screen and (max-width: 960px) {
+  h1 {
+    font-size: 2.5rem;
+    line-height: normal;
+  }
+  .best-of-section {
+      padding-left: initial;
+    }
+
+    .card-bg {
+      background: initial;
+    }
+}
+
+  @media only screen and (min-width: 1280px) and (max-width: 1970px) {
+    .card-bg {
+      background: url("/images/pawPrintBG.jpg") repeat-y left;
+    }
+  }

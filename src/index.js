@@ -41,8 +41,7 @@ app.use(morgan('dev'));
 app.use(jsonParser());
 
 // Setup the database connection through mongoose
-//mongoose.connect('mongodb://localhost/dogs');
-mongoose.connect('mongodb://heroku_pklp80h4:s0odka3rb8tou9k02bh14psava@ds133221.mlab.com:33221/heroku_pklp80h4');
+mongoose.connect('mongodb://localhost/dogs');
 
 var db = mongoose.connection;
 
@@ -53,14 +52,14 @@ db.on('error', function(err) {
 db.once('open', function() {
     // all database communication goes here
     // seed the database
-    //require('./seed');
+    require('./seed');
     console.log('Database connection successful');
 });
 
 // setup our static route to serve files from the "public" folder
 app.use('/', express.static('public'));
-//app.use('/', express.static('app'));
-//app.use('/', express.static('dist'));
+app.use('/', express.static('app'));
+app.use('/', express.static('dist'));
 
 // Set up routes
 app.use('/api', routes.user);
@@ -86,16 +85,4 @@ app.use(function(err, req, res, next) {
 // start listening on our port
 var server = app.listen(app.get('port'), function() {
   console.log('Express server is listening on port ' + server.address().port);  
-});
-
-app.post('/resource', function(request, response){ //Every HTTP post to baseUrl/resource will end up here
-  console.log('Updated myDogs.json');
-  fs.writeFile('myDogs.json', request.body, function(err){
-    if(err) {
-      console.error(err);
-      return response.status(500).json(err); //Let the client know something went wrong
-    }
-    console.log('Updated myDogs.json');
-    response.send(); //Let the client know everything's good.
-  });
 });
