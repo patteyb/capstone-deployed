@@ -191,7 +191,6 @@
                 vm.randomRescue = rescue;
                 $scope.$apply();
             }, function() {
-                console.log('No rescue retrieved.');
                 vm.hideRescue = true;
             });
 
@@ -474,7 +473,7 @@
             // Set up the back-to-top button
             vm.toTop = function() {
                 $document.scrollTopAnimated(0, 1000);
-            }
+            };
 
             // Retrieve dogs from db that fit the filters
             vm.getFilteredDogs = function(filters) {
@@ -485,7 +484,7 @@
                         favoritesService.markFavorites(vm.dogs, vm.currentUser.favorites);
                     }
                 });
-            }
+            };
 
            // Clear all filters and display all dogs in db
            vm.clearFilters = function() {
@@ -496,11 +495,11 @@
                         favoritesService.markFavorites(vm.dogs, vm.currentUser.favorites);
                     }
                 });
-           }
+           };
 
             vm.getDogDetail = function(id) {
                $state.go('detail', {id: id, breed: null});
-           }
+           };
 
         });   
 })();
@@ -887,31 +886,6 @@
                 return 'https://www.youtube.com/embed/' + videoId;
             };
 
-            // Enables user to add or delete this dog to his favorite list
-            /*vm.toggleFavorite = function(dog) {
-               if (!vm.currentUser.isAuthenticated) {
-                   toastService.showToast("You need to be signed in to access your favorites list.");
-                   return;
-               }
-               if ( vm.currentUser.favorites.length !== 0 && vm.currentUser.favorites.indexOf(dog._id) !== -1 ) {
-                   // Dog is in favorites List, so remove it
-                   usersFactory.deleteFavorite(vm.currentUser, dog._id, 'detail', 0).then(function() {
-                       toastService.showToast(dog.breed + ' has been removed from your favorites list.');
-                       vm.currentUser.favorites.splice(vm.currentUser.favorites.indexOf(dog._id), 1);
-                       sessionService.setUser(vm.currentUser);
-                       dog.favClass = 'paw fav-off';
-                   });
-               } else {
-                   // Add dog to favorites list
-                   usersFactory.addFavorite(vm.currentUser, dog._id, 'detail', 0).then(function() {
-                       toastService.showToast(dog.breed + ' has been added to your favorites list.');
-                       vm.currentUser.favorites.push(dog._id);
-                       sessionService.setUser(vm.currentUser);
-                       dog.favClass = 'paw fav-on';
-                   });
-               }  
-           };*/
-
            // Enables user to see the standard for this breed
            vm.showStandard = function(event, dog) {
                var iframeSrc = $sce.trustAsResourceUrl(dog.breedStandard);
@@ -1003,7 +977,7 @@
 
     angular
         .module('app')
-        .controller('accountCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, $mdSidenav, $state, $document, $q) {
+        .controller('accountCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, $mdSidenav, $state, $document) {
             
             var vm = this;
             vm.page = 'Account';
@@ -1185,6 +1159,7 @@
                         vm.deleteRescue(list[i], false);
                     }
                 }
+                vm.count = count;
             }
 
             function formatDog(dog) {
@@ -1533,7 +1508,7 @@
             }
 
             function getRescues(idArray) {
-                var defer = $q.defer();
+                //var defer = $q.defer();
                 var promises = idArray.map( function( id ) {
                     var url = 'https://api.petfinder.com/pet.get?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json&callback=JSON_CALLBACK';
                     return $http.jsonp(url);
@@ -1606,7 +1581,7 @@
                         var breed1 = breed.replace(' ', '-');
                         var breed2 = breed1.replace(' ', '-');
                         var breed3 = breed2.replace(' ', '-');
-                        var url = 'http://www.akc.org/dog-breeds/' + breed3 + '/';
+                        var url = 'https://www.akc.org/dog-breeds/' + breed3 + '/';
                         resolve( $http.get(url) );
                     }
                 });
@@ -2311,7 +2286,7 @@
 
     angular
         .module('app')
-        .factory('searchService', function(dogsFactory, toastService, $q, $http) {
+        .factory('searchService', function(dogsFactory, toastService, $q) {
 
         // Fill breed list for drop down menus
         function loadBreeds() {
@@ -2375,7 +2350,6 @@
                         });
                     });
                 } else { 
-                    console.log("GeoLocation not supported");
                     reject();
                 }
                 reject();
@@ -2475,7 +2449,7 @@
                     $scope.untrackAdoptable = function(dog) {
                         $scope.control.showTracking = true; 
                         $scope.control.showUntracking = false; 
-                        //untrackDog(dog.id.$t, dog.name.$t);
+                        untrackDog(dog.id.$t, dog.name.$t);
                     };
                 }],
                 template: 
@@ -2538,7 +2512,6 @@
            function trackDog(id, name) {
                // check to ensure this dog isn't already on list
                if (currentUser.rescues.indexOf(id) === -1) {
-                   console.log('Adding to list...');
                     usersFactory.addRescue(id, currentUser._id).then(function(){
                         currentUser.rescues.push(id);
                         sessionService.setUser(currentUser);
