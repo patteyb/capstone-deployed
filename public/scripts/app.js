@@ -790,13 +790,14 @@
             function getDog(id) {
                 return new Promise(function(resolve, reject) {
                     dogsFactory.getDog(id).then(function(dog) {
+                        console.log('back from factory, dog: ', dog);
                         dog = dog.data[0];
                         // Check to see if this dog is among the user's favorites
                         if (vm.currentUser.favorites.length !== 0) {
                             // favoritesService will return an array
                             dog = favoritesService.markFavorites(dog, vm.currentUser.favorites);
                         }
-                        resolve(dog[0]);
+                        resolve(dog);
                     }, function() {
                         toastService('Unable to get dog info.');
                         reject();
@@ -854,6 +855,7 @@
             // Get dog by ID or by breed name
             if ($stateParams.id) {
                 getDog($stateParams.id).then(function(dog) {
+                    console.log('dog: ', dog);
                     vm.dog = dog;
                     vm.page = 'Breed // ' + vm.dog.breed;
                     getVideos(vm.dog.breed);
