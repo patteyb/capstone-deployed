@@ -4,7 +4,7 @@
 
     angular.module('app', ['ngSanitize', 'ngAnimate', 'ngAria', 'ngMaterial', 'ui.router', 'duScroll']).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, $sceDelegateProvider) {
 
-        $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://www.youtube.com/**', 'http://api.petfinder.com/**']);
+        $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://www.youtube.com/**', 'https://api.petfinder.com/**']);
 
         $mdThemingProvider.theme('default')
             .primaryPalette('amber')
