@@ -4,8 +4,7 @@
   "description": "API to help users find their dream dog",
   "main": "src/index.js",
   "scripts": {
-    "ng": "ng",
-    "start": "node src/index.js"
+    "start": "nodemon src/index.js"
   },
   "author": "Pattey Bleecker",
   "license": "MIT",
@@ -19,7 +18,6 @@
     "moment": "^2.18.1",
     "mongoose": "^4.8.5",
     "mongoose-integer": "^0.1.1",
-    "mongoose-seeder": "^1.2.1",
     "mongoose-unique-validator": "^1.0.4",
     "morgan": "^1.8.1",
     "path": "^0.12.7",

@@ -4,7 +4,7 @@
 
     angular.module('app', ['ngSanitize', 'ngAnimate', 'ngAria', 'ngMaterial', 'ui.router', 'duScroll']).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, $sceDelegateProvider) {
 
-        $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://www.youtube.com/**', 'https://api.petfinder.com/**']);
+        $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://www.youtube.com/**', 'http://api.petfinder.com/**']);
 
         $mdThemingProvider.theme('default')
             .primaryPalette('amber')
@@ -225,7 +225,6 @@
         }
 
         function getDogDetail(id) {
-            console.log('In getDogDetail: ', id);
             $state.go('detail', {id: id, breed: null});
         }
 
@@ -368,7 +367,7 @@
 
     angular
         .module('app')
-        .controller('breedsCtrl', function(dogsFactory, usersFactory, searchService, sessionService, errorHandlerService, toastService, $document, $stateParams, $mdSidenav, $state) {
+        .controller('breedsCtrl', function(dogsFactory, usersFactory, searchService, sessionService, errorHandlerService, toastService, favoritesService, $document, $stateParams, $mdSidenav, $state) {
             
             var vm = this;
             var pageTemplate = 'Breeds // ';
@@ -379,7 +378,6 @@
             vm.showBackToTop = true;
             vm.letter = $stateParams.letter;
             vm.getBreedsByLetter = getBreedsByLetter;
-            vm.toggleFavorite = toggleFavorite;
             vm.toTop = toTop;
             vm.getDogDetail = getDogDetail;
 
@@ -396,7 +394,13 @@
 
             vm.alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W-Z'];
 
+            // User selected a breed to be marked and saved as favorite
+            vm.toggleFavorite = function(id, breed) {
+                favoritesService.toggleFavorite(id, breed);
+            };
+
             getBreedsByLetter(vm.letter);
+
 
             function getBreedsByLetter(letter) {
                 if (letter === '') {
@@ -408,7 +412,7 @@
                     vm.dogs = dogs.data;
                     // Note which dogs are favorites of user
                     if (vm.currentUser.favorites.length !== 0) {
-                        vm.dogs = markFavorites(vm.dogs, vm.currentUser.favorites);
+                        vm.dogs = favoritesService.markFavorites(vm.dogs, vm.currentUser.favorites);
                     }
                 });
             }
@@ -418,45 +422,9 @@
                 $document.scrollTopAnimated(0, 1000);
             }
 
-           function toggleFavorite(dogId, breed) {
-               if (!vm.currentUser.isAuthenticated) {
-                   toastService.showToast("You need to be signed in to access your favorites list.");
-                   return;
-               }
-               var element = document.getElementById(dogId);
-               if ( vm.currentUser.favorites.length !== 0 && vm.currentUser.favorites.indexOf(dogId) !== -1 ) {
-                   // Dog is in favorites List, so remove it
-                   usersFactory.deleteFavorite(vm.currentUser, dogId, 'breeds', vm.letter).then(function() {
-                       toastService.showToast(breed + ' has been removed from your favorites list.');
-                       element.className = "paw fav-off";
-                       vm.currentUser.favorites.splice(vm.currentUser.favorites.indexOf(dogId), 1);
-                       sessionService.setUser(vm.currentUser);
-                   });
-               } else {
-                   // Add dog to favorites list
-                   usersFactory.addFavorite(vm.currentUser, dogId, 'breeds', vm.letter).then(function() {
-                       toastService.showToast(breed + ' has been added to your favorites list.');
-                       element.className = "paw fav-on";
-                       vm.currentUser.favorites.push(dogId);
-                       sessionService.setUser(vm.currentUser);
-                   });
-               }  
-           }
-
             function getDogDetail(id) {
                $state.go('detail', {id: id, breed: null});
            }
-
-           function markFavorites(dogs, favList) {
-               for (var i = 0; i < dogs.length; i++) {
-                   if (favList.indexOf(dogs[i]._id) !== -1) {
-                       dogs[i].favClass = 'paw fav-on';
-                   } else {
-                       dogs[i].favClass = 'paw fav-off';
-                   }
-                }
-                return dogs;
-            }
 
         });   
 })();
@@ -466,7 +434,7 @@
 
     angular
         .module('app')
-        .controller('filteredCtrl', function(dogsFactory, usersFactory, sessionService, searchService, errorHandlerService, toastService, $document, $state, $mdSidenav) {
+        .controller('filteredCtrl', function(dogsFactory, usersFactory, sessionService, searchService, errorHandlerService, toastService, favoritesService, $document, $state, $mdSidenav) {
             
             var vm = this;
             vm.page = 'Dog Breeds // Filtered';
@@ -474,21 +442,18 @@
             vm.filters = {};
             vm.isFilteredPage = true;
             vm.letter = 'A';
-            vm.getFilteredDogs = getFilteredDogs;
-            vm.toggleFavorite = toggleFavorite;
-            vm.clearFilters = clearFilters;
-            vm.toTop = toTop;
             vm.height = window.innerHeight;
-            vm.getDogDetail = getDogDetail;
-
-            // Set up the side navigation for smaller screen sizes
-            vm.toggleLeft = function() {
-                $mdSidenav('left').toggle();
-            };
 
             // list of breed objects to set up search box
             searchService.loadBreeds().then(function(results) {
                 vm.dbBreeds = results;
+            });
+
+            dogsFactory.getDogs().then(function(dogs) {
+                vm.dogs = dogs.data;
+                if (vm.currentUser.favorites.length !== 0) {
+                    vm.dogs = favoritesService.markFavorites(vm.dogs, vm.currentUser.favorites);
+                }
             });
 
             // Set up the back-to-top button
@@ -496,80 +461,46 @@
                 $document.scrollTopAnimated(0, 1000);
             };
 
-            dogsFactory.getDogs().then(function(dogs) {
-                vm.dogs = dogs.data;
-                if (vm.currentUser.favorites.length !== 0) {
-                    markFavorites(vm.dogs, vm.currentUser.favorites);
-                }
-            });
+            // Set up the side navigation for smaller screen sizes
+            vm.toggleLeft = function() {
+                $mdSidenav('left').toggle();
+            };
+
+            // User selected a breed to be marked and saved as favorite
+            vm.toggleFavorite = function(id, breed) {
+                favoritesService.toggleFavorite(id, breed);
+            };
 
             // Set up the back-to-top button
-            function toTop() {
+            vm.toTop = function() {
                 $document.scrollTopAnimated(0, 1000);
             }
 
             // Retrieve dogs from db that fit the filters
-            function getFilteredDogs(filters) {
+            vm.getFilteredDogs = function(filters) {
                 dogsFactory.getFilteredDogs(filters).then(function(dogs) {
                     vm.dogs = dogs.data;
                     // Mark dogs that are among the user's favorites
                     if (vm.currentUser.favorites.length !== 0) {
-                        markFavorites(vm.dogs, vm.currentUser.favorites);
+                        favoritesService.markFavorites(vm.dogs, vm.currentUser.favorites);
                     }
                 });
             }
 
-            // Allow user to add or delete a dog from their favorites list
-            function toggleFavorite(dogId, breed) {
-               if (!vm.currentUser.isAuthenticated) {
-                   toastService.showToast("You need to be signed in to access your favorites list.");
-                   return;
-               }
-               var element = document.getElementById(dogId);
-               if ( vm.currentUser.favorites.length !== 0 && vm.currentUser.favorites.indexOf(dogId) !== -1 ) {
-                   // Dog is in favorites List, so remove it
-                   usersFactory.deleteFavorite(vm.currentUser, dogId, 'breeds', vm.letter).then(function() {
-                       toastService.showToast(breed + ' has been removed from your favorites list.');
-                       element.className = "paw fav-off";
-                       vm.currentUser.favorites.splice(vm.currentUser.favorites.indexOf(dogId), 1);
-                       sessionService.setUser(vm.currentUser);
-                   });
-               } else {
-                   // Add dog to favorites list
-                   usersFactory.addFavorite(vm.currentUser, dogId, 'breeds', vm.letter).then(function() {
-                       toastService.showToast(breed + ' has been added to your favorites list.');
-                       element.className = "paw fav-on";
-                       vm.currentUser.favorites.push(dogId);
-                       sessionService.setUser(vm.currentUser);
-                   });
-               }  
-           }
-
            // Clear all filters and display all dogs in db
-           function clearFilters() {
+           vm.clearFilters = function() {
                vm.filters = {};
                dogsFactory.getDogs().then(function(dogs) {
                     vm.dogs = dogs.data;
                     if (vm.currentUser.favorites.length !== 0) {
-                        markFavorites(vm.dogs, vm.currentUser.favorites);
+                        favoritesService.markFavorites(vm.dogs, vm.currentUser.favorites);
                     }
                 });
            }
 
-            function getDogDetail(id) {
+            vm.getDogDetail = function(id) {
                $state.go('detail', {id: id, breed: null});
            }
-
-            // Change a dog'class to reflect if they are a favorite or not
-           function markFavorites(dogs, favList) {
-               for (var i = 0; i < dogs.length; i++) {
-                   if (favList.indexOf(dogs[i]._id) !== -1) {
-                       dogs[i].favClass = 'paw fav-on';
-                   } else {
-                       dogs[i].favClass = 'paw fav-off';
-                   }
-                }
-            }
 
         });   
 })();
@@ -841,7 +772,7 @@
 
     angular
         .module('app')
-        .controller('dogDetailCtrl', function(dogsFactory, usersFactory, sessionService, errorHandlerService, toastService, searchService, locationService, adoptableService, $document, $sce, $scope, $http, $mdDialog, $mdSidenav, $stateParams, $state) {
+        .controller('dogDetailCtrl', function(dogsFactory, usersFactory, sessionService, errorHandlerService, toastService, searchService, locationService, adoptableService, favoritesService, $document, $sce, $scope, $http, $mdDialog, $mdSidenav, $stateParams, $state) {
 
             var vm = this;
             vm.currentUser = sessionService.getUser();
@@ -856,16 +787,6 @@
                 vm.dbBreeds = results;
             });
 
-            // Changes class that will display favorite breeds properly
-           function markFavorites(dog, favList) {
-                if (favList.indexOf(dog._id) !== -1) {
-                    dog.favClass = 'paw fav-on';
-                } else {
-                    dog.favClass = 'paw fav-off';
-                }
-                return dog;
-            }
-
             // Get dog from db by ID
             function getDog(id) {
                 return new Promise(function(resolve, reject) {
@@ -873,9 +794,10 @@
                         dog = dog.data[0];
                         // Check to see if this dog is among the user's favorites
                         if (vm.currentUser.favorites.length !== 0) {
-                            dog = markFavorites(dog, vm.currentUser.favorites);
+                            // favoritesService will return an array
+                            dog = favoritesService.markFavorites(dog, vm.currentUser.favorites);
                         }
-                        resolve(dog);
+                        resolve(dog[0]);
                     }, function() {
                         toastService('Unable to get dog info.');
                         reject();
@@ -890,9 +812,10 @@
                         dog = dog.data;
                         // Check to see if this dog is among the user's favorites
                         if (vm.currentUser.favorites.length !== 0) {
-                            dog = markFavorites(dog, vm.currentUser.favorites);
+                            // favoritesService will return an array
+                            dog = favoritesService.markFavorites(dog, vm.currentUser.favorites);
                         }
-                        resolve(dog);
+                        resolve(dog[0]);
                     }, function() {
                         toastService('Unable to get dog info.');
                         reject();
@@ -929,11 +852,6 @@
             }
 
 
-            // Set up the side navigation for smaller screen sizes
-            vm.toggleLeft = function() {
-                $mdSidenav('left').toggle();
-            };
-
             // Get dog by ID or by breed name
             if ($stateParams.id) {
                 getDog($stateParams.id).then(function(dog) {
@@ -949,13 +867,28 @@
                 });
             }
 
+            // User selected a breed to be marked and saved as favorite
+            vm.toggleFavorite = function(id, breed) {
+                favoritesService.toggleFavorite(id, breed);
+                if (vm.dog.favClass === 'paw fav-on') {
+                    vm.dog.favClass = 'paw fav-off';
+                } else {
+                    vm.dog.favClass = 'paw fav-on';
+                }
+            };
+
+            // Set up the side navigation for smaller screen sizes
+            vm.toggleLeft = function() {
+                $mdSidenav('left').toggle();
+            };
+
             // Returns you-tube source for embedded iframe video
             vm.getIframeSrc = function(videoId) {
                 return 'https://www.youtube.com/embed/' + videoId;
             };
 
             // Enables user to add or delete this dog to his favorite list
-            vm.toggleFavorite = function(dog) {
+            /*vm.toggleFavorite = function(dog) {
                if (!vm.currentUser.isAuthenticated) {
                    toastService.showToast("You need to be signed in to access your favorites list.");
                    return;
@@ -977,7 +910,7 @@
                        dog.favClass = 'paw fav-on';
                    });
                }  
-           };
+           };*/
 
            // Enables user to see the standard for this breed
            vm.showStandard = function(event, dog) {
@@ -1070,7 +1003,7 @@
 
     angular
         .module('app')
-        .controller('accountCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, $mdSidenav, $state, $document) {
+        .controller('accountCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, $mdSidenav, $state, $document, $q) {
             
             var vm = this;
             vm.page = 'Account';
@@ -1084,6 +1017,7 @@
             vm.hasValidationErrors = false;
             vm.favorites = vm.currentUser.favorites;
             vm.sort = 'fav.breed';
+            vm.count = 0;
             vm.height = window.innerHeight;
             vm.getDogDetail = getDogDetail;
 
@@ -1107,85 +1041,32 @@
                     } 
                 });
             }
-
-            // If user has saved rescues, get them and format for page
+    
+            // If user has rescues saved, get them and format them for display
             if (vm.currentUser.rescues.length !== 0) {
-                var idArray = vm.currentUser.rescues;
-                var dogs = [];
-                for (var i = 0; i < idArray.length; i++) {
-                    dogsFactory.getRescues(idArray[i]).then(function(dog) {
-                        if (dog) {
-                            dog = dog.data.petfinder.pet;
-                            if (dog.status) {
-                                var status = dog.status.$t;
-                                if (status === 'A') {
-                                    status = 'Adoptable';
-                                } else if (status === 'H') {
-                                    status = 'Hold';
-                                } else if (status === 'P') {
-                                    status = 'Pending';
-                                } else {
-                                    status = 'Adopted/Removed';
-                                }
-                                dog.status.$t = status;
-                            }
-                            if (dog.lastUpdate) {
-                                var index = dog.lastUpdate.$t.indexOf('T');
-                                if (index != -1) {
-                                    dog.lastUpdate.$t = dog.lastUpdate.$t.slice(0, index);
-                                }
-                            }
-                            if (dog.options.option) {
-                                dog.hasOptions = true;
-                                if (!Array.isArray(dog.options.option)) {
-                                    // There is only one option stored as a string.
-                                    // Change format to be an Array
-                                    var obj = {
-                                        $t: dog.options.option.$t
-                                    };
-                                    dog.options.option = [];
-                                    dog.options.option.push(obj);
-                                }
-                                for (var i = 0; i < dog.options.option.length; i++) {
-                                    if (dog.options.option[i].$t === 'housetrained') {
-                                        dog.options.option[i].$t = 'House-trained';
-                                    } else if (dog.options.option[i].$t === 'specialNeeds') {
-                                        dog.options.option[i].$t = 'Special needs';
-                                    } else if (dog.options.option[i].$t === 'noCats') {
-                                        dog.options.option[i].$t = 'Not good with cats';
-                                    } else if (dog.options.option[i].$t === 'noDogs') {
-                                        dog.options.option[i].$t = 'Not good with other dogs';
-                                    } else if (dog.options.option[i].$t === 'altered') {
-                                        dog.options.option[i].$t = 'Has been spayed/neutered';
-                                    } else if (dog.options.option[i].$t === 'hasShots') {
-                                        dog.options.option[i].$t = 'Vaccinations are up-to-date';
-                                    }
-                                }
-                            } else {
-                                dog.hasOptions = false;
-                            }
-                            if (dog.media.photos.photo) {
-                                var photoArray = [];
-                                var mainPhoto = '';
-                                for (var i = 0; i < dog.media.photos.photo.length; i++) {
-                                    if (dog.media.photos.photo[i]['@size'] === 'x') {
-                                        if (mainPhoto === '') {
-                                            mainPhoto = dog.media.photos.photo[i].$t;
-                                        } else {
-                                            photoArray.push(dog.media.photos.photo[i].$t);
-                                        }
-                                    }
-                                }
-                                dog.mainPhoto = mainPhoto;
-                                dog.photos = photoArray;
-                            }
-                            dogs.push(dog);
+                dogsFactory.getRescues( vm.currentUser.rescues ).then(function(dogs) {
+                    if (dogs.length !== 0) {
+                        var list = [];
+                        // Remove empty objects indicating a fail-to-find on Petfinder
+                        for( var i = 0; i < dogs.length; i++) {
+                            if (dogs[i].data.petfinder.pet) {
+                                list.push( dogs[i].data.petfinder.pet );
+                            } 
                         }
-                    }, function() {
-                        toastService('Unable to get rescues at this time.');
-                    });  
-                }
-                vm.rescueDogs = dogs;
+                        // Remove from user's list any dogs no longer in Petfinder's system
+                        if ( list.length < vm.currentUser.rescues.length ) {
+                            vm.count++;
+                            removeDefunctRescues( list );
+                        }
+                        // Format fields for display
+                        for( i = 0; i < list.length; i++ ) {
+                            formatDog(list[i]);
+                        }
+                        vm.rescueDogs = list;
+                    }
+                }, function() {
+                    toastService('Unable to get rescues at this time.');
+                });
             }
 
             // Set up the back-to-top button
@@ -1279,20 +1160,98 @@
 
             // Delete rescue dog from user's saved list
             // Need to delete from db and also currentUser, then update vm.rescueDogs for displaying to page
-            vm.deleteRescue = function(dogId) {
+            vm.deleteRescue = function(dogId, removeFromDisplay ) {
                 usersFactory.deleteRescue(dogId, vm.currentUser._id).then(function() {
                     vm.currentUser.rescues.splice(vm.currentUser.rescues.indexOf(dogId), 1);
-                    var index = -1;
-                    for (var i = 0; i < vm.rescueDogs.length; i++) {
-                        if (vm.rescueDogs[i].id.$t === dogId) {
-                            index = i;
-                            i = vm.rescueDogs.length;
+                    if (removeFromDisplay) {
+                        var index = -1;
+                        for (var i = 0; i < vm.rescueDogs.length; i++) {
+                            if (vm.rescueDogs[i].id.$t === dogId) {
+                                index = i;
+                                i = vm.rescueDogs.length;
+                            }
                         }
+                        vm.rescueDogs.splice(index, 1);
                     }
-                    vm.rescueDogs.splice(index, 1);
                     sessionService.setUser(vm.currentUser);
                 });
             };
+
+            function removeDefunctRescues( list ) {
+                var count = 0;
+                for (var i = 0; i < list.length; i++ ) {
+                    if (vm.currentUser.rescues.indexOf(list[i]) === -1) {
+                        count++;
+                        vm.deleteRescue(list[i], false);
+                    }
+                }
+            }
+
+            function formatDog(dog) {
+                if (dog.status) {
+                    var status = dog.status.$t;
+                    if (status === 'A') {
+                        status = 'Adoptable';
+                    } else if (status === 'H') {
+                        status = 'Hold';
+                    } else if (status === 'P') {
+                        status = 'Pending';
+                    } else {
+                        status = 'Adopted/Removed';
+                    }
+                    dog.status.$t = status;
+                }
+                if (dog.lastUpdate) {
+                    var index = dog.lastUpdate.$t.indexOf('T');
+                    if (index != -1) {
+                        dog.lastUpdate.$t = dog.lastUpdate.$t.slice(0, index);
+                    }
+                }
+                if (dog.options.option) {
+                    dog.hasOptions = true;
+                    if (!Array.isArray(dog.options.option)) {
+                        // There is only one option stored as a string.
+                        // Change format to be an Array
+                        var obj = {
+                            $t: dog.options.option.$t
+                        };
+                        dog.options.option = [];
+                        dog.options.option.push(obj);
+                    }
+                    for (var j = 0; j < dog.options.option.length; j++) {
+                        if (dog.options.option[j].$t === 'housetrained') {
+                            dog.options.option[j].$t = 'House-trained';
+                        } else if (dog.options.option[j].$t === 'specialNeeds') {
+                            dog.options.option[j].$t = 'Special needs';
+                        } else if (dog.options.option[j].$t === 'noCats') {
+                            dog.options.option[j].$t = 'Not good with cats';
+                        } else if (dog.options.option[j].$t === 'noDogs') {
+                            dog.options.option[j].$t = 'Not good with other dogs';
+                        } else if (dog.options.option[j].$t === 'altered') {
+                            dog.options.option[j].$t = 'Has been spayed/neutered';
+                        } else if (dog.options.option[j].$t === 'hasShots') {
+                            dog.options.option[j].$t = 'Vaccinations are up-to-date';
+                        }
+                    }
+                } else {
+                    dog.hasOptions = false;
+                }
+                if (dog.media.photos.photo) {
+                    var photoArray = [];
+                    var mainPhoto = '';
+                    for (var k = 0; k < dog.media.photos.photo.length; k++) {
+                        if (dog.media.photos.photo[k]['@size'] === 'x') {
+                            if (mainPhoto === '') {
+                                mainPhoto = dog.media.photos.photo[k].$t;
+                            } else {
+                                photoArray.push(dog.media.photos.photo[k].$t);
+                            }
+                        }
+                    }
+                    dog.mainPhoto = mainPhoto;
+                    dog.photos = photoArray;
+                }
+            }
 
             function getDogDetail(id) {
                 $state.go('detail', {id: id, breed: null});
@@ -1457,7 +1416,7 @@
 
     angular
         .module('app')
-        .controller('bestOfCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, $mdSidenav, $state, $document, $stateParams) {
+        .controller('bestOfCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, favoritesService, $mdSidenav, $state, $document, $stateParams) {
 
         var vm = this;
         vm.page = 'Best Dogs';
@@ -1483,14 +1442,26 @@
         if (vm.listType) {
             getBestOf(vm.listType).then(function(dogs) {
                 vm.dogs = dogs.data;
+                if (vm.currentUser.favorites.length !== 0) {
+                    vm.dogs = favoritesService.markFavorites(vm.dogs, vm.currentUser.favorites);
+                }
             });
         }
 
+        // Get list selected from secondary menu
         vm.getList = function( list ) {
             vm.listType = list;
             dogsFactory.getBestOfDogs(list).then(function(dogs) {
-                    vm.dogs = dogs.data;
-                });
+                vm.dogs = dogs.data;
+                if (vm.currentUser.favorites.length !== 0) {
+                    vm.dogs = favoritesService.markFavorites(vm.dogs, vm.currentUser.favorites);
+                }
+            });
+        };
+
+        // User selected a breed to be marked and saved as favorite
+        vm.toggleFavorite = function(id, breed) {
+            favoritesService.toggleFavorite(id, breed);
         };
 
         function getBestOf( list ) {
@@ -1519,7 +1490,7 @@
 
     angular
         .module("app")
-        .factory('dogsFactory', function($http, $sce) {
+        .factory('dogsFactory', function($http, $sce, $q) {
 
             function getDogs() {
                 return $http.get('api/dogs');
@@ -1561,9 +1532,13 @@
                 }
             }
 
-            function getRescues(id) {
-                var url = 'https://api.petfinder.com/pet.get?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json&callback=JSON_CALLBACK';
-                return $http.jsonp(url);
+            function getRescues(idArray) {
+                var defer = $q.defer();
+                var promises = idArray.map( function( id ) {
+                    var url = 'https://api.petfinder.com/pet.get?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json&callback=JSON_CALLBACK';
+                    return $http.jsonp(url);
+                });
+                return $q.all(promises);
             }
 
             function getRandomRescue(zip) {
@@ -1655,7 +1630,7 @@
                     var url = 'https://api.petfinder.com/pet.find?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&breed=' + breed + '&location=' + zip + '&format=json&callback=JSON_CALLBACK';
 
                     $http.jsonp(url).then(function(adoptables) {
-                        if (adoptables.data.petfinder.pets) {
+                        if (adoptables.data.petfinder.pets.pet) {
                             var petfinderDogs = adoptables.data.petfinder.pets.pet;
                             var dogs = [];
                             var castoffDogs = [];
@@ -1840,26 +1815,15 @@
             }
 
             function getFavorites() {
-                return $http.get('adi/dogs/favorites');
+                return $http.get('api/dogs/favorites');
             }
 
-            function addFavorite(user, dogId, state1, state2) {
-
-                var header = "Basic " + window.btoa(unescape(encodeURIComponent(user.emailAddress + ":" + user.password)));
-                return $http.put('api/dogs/fav/' + user._id + '/'  + dogId + '/' + state1 + '/' + state2, {
-                    headers: {
-                        "Authorization": header
-                    }
-                });
+            function addFavorite(user, dogId) {
+                return $http.put('api/dogs/fav/' + user._id + '/'  + dogId);
             }
 
-            function deleteFavorite(user, dogId, state1, state2) {
-                var header = "Basic " + window.btoa(unescape(encodeURIComponent(user.emailAddress + ":" + user.password)));
-                return $http.delete('api/dogs/fav/' + user._id + '/'  + dogId + '/' + state1 + '/' + state2, {
-                    headers: {
-                        "Authorization": header
-                    }
-                });
+            function deleteFavorite(user, dogId) {
+                return $http.delete('api/dogs/fav/' + user._id + '/'  + dogId);
             }
 
             function addRescue(dogId, userId) {
@@ -2329,8 +2293,8 @@
                $mdToast.show(
                 $mdToast.simple()
                     .content(message)
-                    .position( 'top, right')
-                    .hideDelay(1500) 
+                    .position( 'top right')
+                    .hideDelay(3000) 
                     .theme('success-toast')             
               );
         };
@@ -2471,6 +2435,8 @@
                     showTracking: currentUser.rescues.indexOf(adoptable.id.$t) === -1,
                     showUntracking: currentUser.rescues.indexOf(adoptable.id.$t) !== -1
                 };
+               
+
                 // Format fields for display
                 if (adoptable.sex.$t.toLowerCase() === 'm') {
                     dog.sex.$t = 'Male';
@@ -2509,7 +2475,7 @@
                     $scope.untrackAdoptable = function(dog) {
                         $scope.control.showTracking = true; 
                         $scope.control.showUntracking = false; 
-                        untrackDog(dog.id.$t, dog.name.$t);
+                        //untrackDog(dog.id.$t, dog.name.$t);
                     };
                 }],
                 template: 
@@ -2572,12 +2538,12 @@
            function trackDog(id, name) {
                // check to ensure this dog isn't already on list
                if (currentUser.rescues.indexOf(id) === -1) {
+                   console.log('Adding to list...');
                     usersFactory.addRescue(id, currentUser._id).then(function(){
-                        toastService.showToast(name + ' has been added to your rescues list.');
                         currentUser.rescues.push(id);
                         sessionService.setUser(currentUser);
                         document.getElementById(id).className = 'rescue-on';
-                    });
+                    }); 
                } else {
                    toastService.showToast(name + ' has already been added to your rescues list.');
                }
@@ -2598,6 +2564,70 @@
 
            return {
                showAdoptable: _this.showAdoptable
+           };
+        });
+})();
+(function () {
+    'use strict';
+
+    angular
+        .module('app')
+        .factory('favoritesService', function(usersFactory, sessionService, toastService) {
+        
+        var _this = this;
+        var currentUser = sessionService.getUser();
+
+
+        _this.toggleFavorite =  function(dogId, breed) {
+               if (!currentUser.isAuthenticated) {
+                   toastService.showToast("You need to be signed in to access your favorites list.");
+                   return;
+               }
+               var element = document.getElementById(dogId);
+               if ( currentUser.favorites.length !== 0 && currentUser.favorites.indexOf(dogId) !== -1 ) {
+                   // Dog is in favorites List, so remove it
+                   usersFactory.deleteFavorite(currentUser, dogId).then(function() {
+                       toastService.showToast(breed + ' has been removed from your favorites list.');
+                       if (element) {
+                            element.className = 'paw fav-off';
+                       } 
+                       currentUser.favorites.splice(currentUser.favorites.indexOf(dogId), 1);
+                       sessionService.setUser(currentUser);
+                   });
+               } else {
+                   // Add dog to favorites list
+                   usersFactory.addFavorite(currentUser, dogId, 'breeds', '').then(function() {
+                       toastService.showToast(breed + ' has been added to your favorites list.');
+                       if (element) {
+                            element.className = 'paw fav-on';
+                       } 
+                       currentUser.favorites.push(dogId);
+                       sessionService.setUser(currentUser);
+                   });
+               }  
+           };
+
+           _this.markFavorites = function(dogs, favList) {
+               var arr = [];
+               // Convert dogs to array if it is a singular dog from detail page
+               if (!Array.isArray(dogs)) {
+                   arr.push(dogs);
+               } else {
+                   arr = dogs;
+               }
+               for (var i = 0; i < arr.length; i++) {
+                   if (favList.indexOf(arr[i]._id) !== -1) {
+                       arr[i].favClass = 'paw fav-on';
+                   } else {
+                       arr[i].favClass = 'paw fav-off';
+                   }
+                }
+                return arr;
+            };
+
+           return {
+               toggleFavorite: _this.toggleFavorite,
+               markFavorites: _this.markFavorites
            };
         });
 })();

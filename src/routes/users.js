@@ -56,18 +56,13 @@ router.post('/users/file', function(req, res, next) {
 
 /** PUT /api/dogs/fav/:userId/:dogId/:state1/:state2 
  * Adds a dog to a user's favorites */
-router.put('/dogs/fav/:userId/:dogId/:state1/:state2', function(req, res, next) {
+router.put('/dogs/fav/:userId/:dogId', function(req, res, next) {
     Users.findById(req.params.userId, function(err, user) {
         if (err) next(err);
         user.favorites.push(req.params.dogId);
         Users.findByIdAndUpdate(req.params.userId, { $set: { favorites: user.favorites }}, function(err) {
             if (err) next(err);
             res.status(204);
-            if (req.params.state2 !== '0') {
-                res.location('/dogs/' + req.params.state1 + req.params.state2);
-            } else {
-                res.location('/dogs/' + req.params.state1);
-            }
             res.end();
         }); 
     });
@@ -75,18 +70,13 @@ router.put('/dogs/fav/:userId/:dogId/:state1/:state2', function(req, res, next) 
 
 /** DELETE /api/dogs/fav/:userId/:dogId/:state1/:state2 
  * Adds a dog to a user's favorites */
-router.delete('/dogs/fav/:userId/:dogId/:state1/:state2', function(req, res, next) {
+router.delete('/dogs/fav/:userId/:dogId', function(req, res, next) {
     Users.findById(req.params.userId, function(err, user) {
         if (err) next(err);
         user.favorites.splice(user.favorites.indexOf(req.params.dogId), 1);
         Users.findByIdAndUpdate(req.params.userId, { $set: { favorites: user.favorites }}, function(err) {
             if (err) next(err);
             res.status(204);
-            if (req.params.state2 !== '0') {
-                res.location('/dogs/' + req.params.state1 + req.params.state2);
-            } else {
-                res.location('/dogs/' + req.params.state1);
-            }
             res.end();
         }); 
     });
@@ -252,21 +242,6 @@ router.put('/dogs/account/password', function(req, res, next) {
     } 
 });
         
-/** DELETE /api/dogs/fav/:userId/:dogId/:location 
- * Deletes a dog from a user's favorites */
-router.delete('/dogs/fav/:userId/:dogId', function(req, res, next) {
-    Users.findById(req.params.userId, function(err, user) {
-        if (err) next(err);
-        user.favorites.splice(user.favorites.indexOf(req.params.dogId), 1);
-        Users.findByIdAndUpdate(req.params.userId, {$set: {favorites: user.favorites}}, { new: true }, function(err, updatedUser) {
-            if (err) next(err);
-            res.status(204);
-            res.location('/dogs/' + req.params.state1 + req.params.state2);
-            res.send(updatedUser);
-        });
-    });
-});
-
 /** DELETE /api/dogs/admin/:userId
  * Deletes a user's */
 router.delete('/dogs/admin/:id', function(req, res, next) {

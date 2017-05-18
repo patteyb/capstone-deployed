@@ -139,7 +139,7 @@
     </div>
     <div class="md-padding" flex="20" flex-xs="100" flex-sm="100" flex-md="100">
         <div layout="row" layout-align="center center" layout-padding>
-            <md-button class="md-warn md-raised md-ink" ng-click="vm.toggleFavorite(vm.dog)" aria-label="toggle Favorite" >
+            <md-button class="md-warn md-raised md-ink" ng-click="vm.toggleFavorite(vm.dog._id, vm.dog.breed)" aria-label="toggle Favorite" >
                 <span style="color: white;" ng-show="vm.dog.favClass == 'paw fav-on'">Remove from Favorites</span>
                 <span style="color: white;" ng-show="vm.dog.favClass == 'paw fav-off'">Save to Favorites</span>
             </md-button>

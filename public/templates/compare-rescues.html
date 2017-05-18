@@ -9,18 +9,21 @@
                 <div><h1>Your Rescue Dogs</h1></div>
                 <div><strong>Here is the list of adoptable dogs you have selected to track.<br>To remove a dog from your list, simply click on the broken heart.</strong></div>
             </div>
+            <div ng-show="vm.count !== 0">
+                Dogs removed from your list because they were no longer listed on Petfinder: {{ vm.count }}
+            </div>
             <div layout="row" layout-align="center start" layout-wrap>
                 <md-card class="rescue-card" ng-repeat="dog in vm.rescueDogs">
                     <md-card-title>
                         <md-card-title-text class="md-headline">{{ dog.name.$t }}</md-card-title-text>
                         <md-card-title-media>
-                            <md-button ng-click="vm.deleteRescue(dog.id.$t)">
+                            <md-button ng-click="vm.deleteRescue(dog.id.$t, true)">
                                 <i class="mdi mdi-36px mdi-heart-broken"></i>
                                 <md-tooltip>Remove</md-tooltip>
                             </md-button>
                         </md-card-title-media>
                     </md-card-title>
-                    <div layout="row" layout-margin layout-sm="column" layout-xs="column">
+                    <div layout="row" layout-margin layout-sm="column" layout-xs="column" layout-wrap>
                         <div layout="column" class="md-media-xl card-media" flex="45" layout-margin>
                             <img class="main-photo" ng-src="{{ dog.mainPhoto }}">
                         </div>
@@ -56,14 +59,6 @@
                                     </div>
                                     <div layout="row">
                                         {{ dog.size.$t }}
-                                    </div>
-                                </div>
-                                <div layout="column">
-                                    <div class="rescue-heading" layout="row">
-                                        Status
-                                    </div>
-                                    <div layout="row">
-                                        {{ dog.status.$t }}
                                     </div>
                                 </div>
                             </div> <!-- end row -->
@@ -114,6 +109,12 @@
                             </div>
                             <div layout="row">
                                 {{ dog.lastUpdate.$t }}
+                            </div>
+                            <div class="rescue-heading" layout="row">
+                                Status
+                            </div>
+                            <div layout="row">
+                                {{ dog.status.$t }}
                             </div>
                         </div>
                     </div>

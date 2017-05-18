@@ -2,6 +2,11 @@
   display: none !important;
 }
 
+/* {
+  font-size: 0.985rem;
+  color: #555;
+}*/
+
 body {
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
   font-size: 0.985rem;
@@ -51,13 +56,10 @@ h5 {
 
 
 @keyframes slideOutLeft {
-    to { transform: translateX(-100%); }
+    to      { transform: translateX(-100%); }
 }
 
-.ng-enter { 
-  animation: fadeIn 0.5s both ease-in; 
-  z-index: 8888; 
-}
+.ng-enter           { animation: fadeIn 0.5s both ease-in; z-index: 8888; }
 
 
 /* STYLES FOR MENUS */
@@ -108,8 +110,16 @@ md-toolbar {
   margin-top: 0;
 }
 
-md-toast.md-success-toast-theme div.md-toast-content {
-    background-color: orange !important;
+
+md-toast.md-success-toast-theme div.md-toast-content{
+    background-color: tomato !important;
+    color: white;
+    font-size: 1rem;
+}
+
+/* this is needed to make the toast appear at top of screen, not top of page */
+md-toast {
+  position: fixed !important;
 }
 
 .spacer {
@@ -483,7 +493,7 @@ a {
   box-shadow: none;
   display: inline-block;
   transform: rotate(-45deg); 
-  -ms-transform: rotate(-45deg); 
+  -ms-transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
   -o-transform: rotate(-45deg);
 }
@@ -620,7 +630,7 @@ iframe {
   height: 38px;
   box-shadow: none;
   transform: rotate(-45deg); 
-  -ms-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg); 
   -webkit-transform: rotate(-45deg);
   -o-transform: rotate(-45deg);
 }
