@@ -41,8 +41,8 @@ app.use(morgan('dev'));
 app.use(jsonParser());
 
 // Setup the database connection through mongoose
-mongoose.connect('mongodb://localhost/dogs');
-//mongoose.connect('mongodb://heroku_pklp80h4:s0odka3rb8tou9k02bh14psava@ds133221.mlab.com:33221/heroku_pklp80h4');
+//mongoose.connect('mongodb://localhost/dogs');
+mongoose.connect('mongodb://heroku_pklp80h4:s0odka3rb8tou9k02bh14psava@ds133221.mlab.com:33221/heroku_pklp80h4');
 
 var db = mongoose.connection;
 
@@ -53,7 +53,7 @@ db.on('error', function(err) {
 db.once('open', function() {
     // all database communication goes here
     // seed the database
-    //require('./seed');
+    require('./seed');
     console.log('Database connection successful');
 });
 
