@@ -402,6 +402,7 @@
 
 
             function getBreedsByLetter(letter) {
+				vm.letter = letter;
                 if (letter === '') {
                     vm.page = pageTemplate + 'All Breeds';
                 } else {
