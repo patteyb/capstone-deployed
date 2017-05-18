@@ -809,13 +809,13 @@
             function getDogByBreed(breed) {
                 return new Promise(function(resolve, reject) {
                     dogsFactory.getDogByBreed(breed).then(function(dog) {
-                        dog = dog.data;
+                        dog = dog.data[0];
                         // Check to see if this dog is among the user's favorites
                         if (vm.currentUser.favorites.length !== 0) {
                             // favoritesService will return an array
                             dog = favoritesService.markFavorites(dog, vm.currentUser.favorites);
                         }
-                        resolve(dog[0]);
+                        resolve(dog);
                     }, function() {
                         toastService('Unable to get dog info.');
                         reject();
