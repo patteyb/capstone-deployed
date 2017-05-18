@@ -2,11 +2,6 @@
   <toolbar></toolbar>
 </div>
 <div class="main" ng-model="height" element-size flex="90" flex-offset="5" layout-margin>
-    <section>
-        <div class="salutation" ng-show="vm.currentUser.isAuthenticated">
-            <h2>Welcome, {{ vm.currentUser.fullName }}!</h2>
-        </div>
-    </section>
     <div class="center" ng-if="vm.shelters.length==0">
         We could find no shelters near zip code {{ vm.currentUser.zip}}. 
     </div>
