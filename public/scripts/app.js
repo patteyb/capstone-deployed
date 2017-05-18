@@ -795,8 +795,10 @@
                         // Check to see if this dog is among the user's favorites
                         if (vm.currentUser.favorites.length !== 0) {
                             // favoritesService will return an array
-                            dog = favoritesService.markFavorites(dog, vm.currentUser.favorites);
-                        }
+                            var dogArr = favoritesService.markFavorites(dog, vm.currentUser.favorites);
+                            dog = dogArr[0];   
+                        }                     
+                        console.log('dog: ', dog);
                         resolve(dog);
                     }, function() {
                         toastService('Unable to get dog info.');
@@ -813,8 +815,10 @@
                         // Check to see if this dog is among the user's favorites
                         if (vm.currentUser.favorites.length !== 0) {
                             // favoritesService will return an array
-                            dog = favoritesService.markFavorites(dog, vm.currentUser.favorites);
+                            var dogArr = favoritesService.markFavorites(dog, vm.currentUser.favorites);
+                            dog = dogArr[0];  
                         }
+                        console.log('dog: ', dog);
                         resolve(dog);
                     }, function() {
                         toastService('Unable to get dog info.');
