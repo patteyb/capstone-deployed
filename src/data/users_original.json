@@ -1,0 +1,26 @@
+{
+"users": {
+        "_model": "User",
+        "patteybleecker": {
+            "_id": "57029ed4795118be119cc437",
+            "fullName": "Pattey Bleecker",
+            "emailAddress": "pattey@bleecker.com",
+            "password": "password", 
+            "role": "administrator"
+        },
+        "leobichon": {
+            "_id": "57029ed4795118be119cc438",
+            "fullName": "Leo Bichon",
+            "emailAddress": "leo@bichon.com",
+            "password": "password",
+             "role": "user"
+        },
+        "calebwhite": {
+            "_id": "57029ed4795118be119cc439",
+            "fullName": "Caleb White",
+            "emailAddress": "caleb@white.com",
+            "password": "password",
+             "role": "user"
+        }
+  }
+}

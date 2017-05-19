@@ -183,13 +183,17 @@
 
             // a zip code is established, so get a rescue dog
             getRandomRescue(vm.currentUser.zip).then(function(rescue) {
-                if (Array.isArray(rescue.breeds.breed)) {
-                    rescue.breedStr = rescue.breeds.breed[0].$t + ', ' + rescue.breeds.breed[1].$t;
+                if (rescue) {
+                    if (Array.isArray(rescue.breeds.breed)) {
+                        rescue.breedStr = rescue.breeds.breed[0].$t + ', ' + rescue.breeds.breed[1].$t;
+                    } else {
+                        rescue.breedStr = rescue.breeds.breed.$t;
+                    }
+                    vm.randomRescue = rescue;
+                    $scope.$apply();
                 } else {
-                    rescue.breedStr = rescue.breeds.breed.$t;
+                    vm.hideRescue = true;
                 }
-                vm.randomRescue = rescue;
-                $scope.$apply();
             }, function() {
                 vm.hideRescue = true;
             });
@@ -391,7 +395,7 @@
             });
 
 
-            vm.alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W-Z'];
+            vm.alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'V-Z'];
 
             // User selected a breed to be marked and saved as favorite
             vm.toggleFavorite = function(id, breed) {
@@ -402,7 +406,7 @@
 
 
             function getBreedsByLetter(letter) {
-				vm.letter = letter;
+                vm.letter = letter;
                 if (letter === '') {
                     vm.page = pageTemplate + 'All Breeds';
                 } else {
@@ -522,8 +526,8 @@
             vm.exercise = ['Low', 'Medium', 'High'];
             vm.size = ['Small', 'Medium', 'Large'];
             vm.shedding = ['No', 'Low', 'Average', 'Profuse'];
-            vm.function = ['Companion', 'Guard', 'Hunting', 'Herding', 'Working', 'Sled'];
-            vm.type = ['Bichon', 'Terrier', 'Hound', 'Toy', 'Shepherd', 'Spaniel', 'Retriever', 'Spitz'];
+            vm.function = ['Companion', 'Guard', 'Hunting', 'Herding', 'Working', 'Sled', 'Sporting'];
+            vm.type = ['Bichon', 'Terrier', 'Hound', 'Toy', 'Shepherd', 'Spaniel', 'Retriever', 'Spitz', 'Mastiff', 'Gun dog'];
             vm.sort = "favorites.";
             vm.showForm = false;
             vm.showUserList = false;
@@ -543,11 +547,6 @@
             vm.toggleLeft = function() {
                 $mdSidenav('left').toggle();
             };
-
-            // list of breed objects to set up search box
-            searchService.loadBreeds().then(function(results) {
-                vm.dbBreeds = results;
-            });
 
             // Scrape breed info from AKC website and show it on the editing form
             vm.getBreedInfo = function(breed) {
@@ -582,9 +581,14 @@
             vm.saveDog = function(dog) {
                 vm.hasValidationErrors = false;
                 dogsFactory.saveDog(dog).then(function() {
-                    toastService.showToast(dog.breed + ' has been saved to the database.');
+                    toastService.showToast(vm.dog.breed + ' has been saved to the database.');
                     vm.showForm = false;
                     vm.dog = {};
+                    // Refresh breeds for pull-down lists
+                    searchService.loadBreeds().then(function(results) {
+                        vm.dbBreeds = results;
+                        //vm.apply();
+                    });
                 },
                     function(response) {
                         errorHandlerService.handleError(response, displayValidationErrors);
@@ -602,10 +606,10 @@
                     dog.exercise && dog.exerciseIcon && dog.health ) {
 
                     dogsFactory.saveEdit(dog).then(function(dog) {
-                        toastService.showToast(dog.breed + ' has been saved to the database.');
+                        vm.dog = dog.data;
+                        toastService.showToast(vm.dog.breed + ' has been saved to the database.');
                         vm.showForm = false;
                         vm.editing = false;
-                        vm.dog = dog.data;
                     },
                         function(response) {
                             errorHandlerService.handleError(response, displayValidationErrors);
@@ -629,18 +633,24 @@
             vm.deleteDog = function(ev, dog) {
                  var confirm = $mdDialog.confirm()
                     .title('Warning: you are about to delete...')
-                    .textContent('the ' + dog.breed + 'breed.')
+                    .textContent('the ' + dog.breed + '.')
                     .ariaLabel('Delete a breed')
                     .targetEvent(ev)
                     .ok('Ok to delete')
                     .cancel('Cancel');
 
                 $mdDialog.show(confirm).then(function() {
+                    console.log('dog.id: ', dog._id );
                     dogsFactory.deleteDog(dog).then(function() {
                         toastService.showToast(dog.breed + ' has been deleted.');
                         vm.showForm = false;
                         vm.editing = false;
                         vm.dog = {};
+                        // Refresh breed list for pull-downs
+                        searchService.loadBreeds().then(function(results) {
+                            vm.dbBreeds = results;
+                            //$scope.apply();
+                        });
                     });
                 });
             };
@@ -791,15 +801,13 @@
             function getDog(id) {
                 return new Promise(function(resolve, reject) {
                     dogsFactory.getDog(id).then(function(dog) {
-                        console.log('back from factory, dog: ', dog);
                         dog = dog.data[0];
                         // Check to see if this dog is among the user's favorites
                         if (vm.currentUser.favorites.length !== 0) {
                             // favoritesService will return an array
                             var dogArr = favoritesService.markFavorites(dog, vm.currentUser.favorites);
-                            dog = dogArr[0];   
-                        }                     
-                        console.log('dog: ', dog);
+                            dog = dogArr[0];
+                        }
                         resolve(dog);
                     }, function() {
                         toastService('Unable to get dog info.');
@@ -817,9 +825,8 @@
                         if (vm.currentUser.favorites.length !== 0) {
                             // favoritesService will return an array
                             var dogArr = favoritesService.markFavorites(dog, vm.currentUser.favorites);
-                            dog = dogArr[0];  
+                            dog = dogArr[0];
                         }
-                        console.log('dog: ', dog);
                         resolve(dog);
                     }, function() {
                         toastService('Unable to get dog info.');
@@ -860,7 +867,6 @@
             // Get dog by ID or by breed name
             if ($stateParams.id) {
                 getDog($stateParams.id).then(function(dog) {
-                    console.log('dog: ', dog);
                     vm.dog = dog;
                     vm.page = 'Breed // ' + vm.dog.breed;
                     getVideos(vm.dog.breed);
@@ -1538,7 +1544,7 @@
                 return $http.jsonp(url);
             }
 
-            function getDogToEdit(id) {          
+            function  getDogToEdit(id) {          
                 return $http.get('api/dogs/admin/' + id);
             }
 
@@ -1551,7 +1557,8 @@
             }
 
             function deleteDog(dog) {
-                return $http.delete('api/dogs/admin/' + dog._id);
+                console.log('In deleteDog()', dog._id);
+                return $http.delete('api/dogs/admin/dogs/' + dog._id);
             }
 
             function getBreeds(letter) {
@@ -1785,7 +1792,7 @@
             }
 
             function deleteUser(user) {
-                return $http.delete('api/dogs/admin/' + user._id);
+                return $http.delete('api/dogs/admin/users/' + user._id);
             }
 
             function updatePassword(user) {

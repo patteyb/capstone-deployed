@@ -87,11 +87,11 @@ const DogSchema = new Schema({
     },
     function: {
         type: String,
-        enum: ['Companion', 'Guard', 'Hunting', 'Herding', 'Working', 'Sled']
+        enum: ['Companion', 'Guard', 'Hunting', 'Herding', 'Working', 'Sled', 'Sporting']
     },
     type: {
         type: String,
-        enum: ['Bichon', 'Terrier', 'Hound', 'Toy', 'Shepherd', 'Spaniel', 'Retriever', 'Spitz']
+        enum: ['Bichon', 'Terrier', 'Hound', 'Toy', 'Shepherd', 'Spaniel', 'Retriever', 'Spitz', 'Mastiff', 'Gun dog']
     },
     hypoallergenic: Boolean,
     shedding: {

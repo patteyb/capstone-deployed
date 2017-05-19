@@ -1,7 +1,7 @@
  <div ng-model="height" element-size>
      <div ng-show="vm.showForm">
-        <h2 class="teal">Fields marked with asterisks are required.</h2>
-        <h2 class="teal">Fields highlighted in <span class="red">red</span> are in error.</h2>
+        <h4>Fields marked with asterisks are required.</h4>
+        <h4>Fields highlighted in <span class="red">red</span> are in error.</h4>
     </div>
     <form>
         <div layout="row" layout-margin>
@@ -43,7 +43,7 @@
             <div layout="column">
                 <md-input-container>
                     <label>Functions As</label>
-                    <md-select ng-model="vm.dog.function" required>
+                    <md-select ng-model="vm.dog.function">
                         <md-option ng-repeat="function in vm.function" value="{{function}}">
                             {{function}}
                         </md-option>
@@ -51,7 +51,7 @@
                 </md-input-container>
                 <md-input-container>
                     <label>Type of Dog</label>
-                    <md-select ng-model="vm.dog.type" required>
+                    <md-select ng-model="vm.dog.type">
                         <md-option ng-repeat="type in vm.type" value="{{type}}">
                             {{type}}
                         </md-option>

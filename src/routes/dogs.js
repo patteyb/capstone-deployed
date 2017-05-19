@@ -138,8 +138,10 @@ router.put('/dogs/admin/', function(req, res, next) {
     });
 });
 
-router.delete('/dogs/admin/:id', function(req, res, next) {
-    Dogs.remove({ id: req.params.id }, function(err) {
+/** DELETE /api/dogs/admin/:id 
+ * Deletes dog with id = :id */
+router.delete('/dogs/admin/dogs/:id', function(req, res, next) {
+    Dogs.findByIdAndRemove(req.params.id, function(err) {
         if (err) next(err);
         res.status(204);
         res.end();
@@ -152,9 +154,8 @@ router.delete('/dogs/admin/:id', function(req, res, next) {
 router.get('/dogs/breeds/:letter', function(req, res, next) {
     var end;
     var start;
-    console.log('letter: ', req.params.letter);
-    if (req.params.letter === 'W-Z') {
-        start = 'W';
+    if (req.params.letter === 'V-Z') {
+        start = 'V';
         end = 'Zz';
     } else {
         start = req.params.letter;

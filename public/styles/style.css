@@ -43,6 +43,10 @@ h5 {
   font-size: 1rem;
 }
 
+md-dialog md-title {
+  font-size: 1.25rem;
+}
+
 .gold-text {
   color: #ffc107;
 }
@@ -345,7 +349,14 @@ a {
   background: url("/images/pawPrintBG.jpg") repeat-y left, url("/images/pawPrintBG.jpg") repeat-y right;
 } 
 
+.best-of-title {
+  color: #ffc107;
+  font-size: 1.25rem;
+  text-align: center;
+}
+
 .best-of-section {
+  margin-top: 15px;
   padding-left: 160px;
   transform: translateY(-20px);
 }
@@ -394,6 +405,16 @@ a {
   .tabsdemoDynamicHeight md-content h1:first-child {
     margin-top: 0; }
 
+.shelter {
+  font-size: 0.875rem;
+}
+
+.shelter img {
+  box-shadow: none;
+  float: right;
+  padding-bottom: 5px;
+}
+
 .tab1 img {
   box-shadow: none;
   width: 400px;
@@ -429,6 +450,10 @@ a {
   float: right;
   shape-outside: ellipse(10%);
   shape-image-threshold: 0.5;
+}
+
+.tab4 ol li {
+  font-size: 0.875rem;
 }
 
 .pink {

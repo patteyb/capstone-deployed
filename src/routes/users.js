@@ -244,7 +244,7 @@ router.put('/dogs/account/password', function(req, res, next) {
         
 /** DELETE /api/dogs/admin/:userId
  * Deletes a user's */
-router.delete('/dogs/admin/:id', function(req, res, next) {
+router.delete('/dogs/admin/users/:id', function(req, res, next) {
     Users.findByIdAndRemove(req.params.id, function(err) {
         if (err) next(err);
         res.status(204);

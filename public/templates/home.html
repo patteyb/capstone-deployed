@@ -62,8 +62,10 @@
         </md-card> 
         <md-card>
           <md-card-content class="card-bg">  
+              <div class="md-title best-of-title">
+                  <strong>Have a specific need?<br> Check out our Best lists:</strong>
+              </div>
               <div class="best-of-section" layout="column" layout-padding layout-align="center start" flex-order-sm="3">
-                  <h4 class="gold-text">Have a specific need?<br> Check out our Best lists:</h4>
                   <div flex>
                     <a ui-sref="bestOf({ list: 'apartment' })">
                       <i class="mdi mdi-paw"></i> Best Apartment-Dwelling Dogs
@@ -98,14 +100,16 @@
           </md-card-content> 
         </md-card>
 
-        <md-card class="section4 pink" ng-hide="vm.hideRescue || !vm.randomRescue" hide show-gt-xs>
-      <!--     <div flex="30" layout-margin layout-padding layout-fill ng-hide="vm.hideRescue || !vm.randomRescue"> -->
-        <!--      <section class="section4" flex="100"> -->
+        <md-card class="section4 pink" hide show-gt-xs>
           <md-card-content>
             <div class="md-title">
-                Please Consider Adoption!
+                <strong>Please Consider Adoption!</strong>
             </div>
-            <div layout="row" layout-padding>
+            <div class="shelter" ng-show="vm.hideRescue">
+              <img src="/images/shelterDog.jpg">
+                There are many dogs in need of a good home. Shelters and adoption agencies may put you through the ringer when it comes to adopting one of their dogs, but only because they are dedicated to finding new owners who can provide a dog-friendly environment and who are a right match for a particular pup. Fill out their applications, and be honest. Also be prepared to wait, and to not get the first dog you set your eyes on. Adopting a dog is a process, but watching a scared, possibly scarred, dog blossom under your loving care is well worth the hassle.
+            </div>
+            <div layout="row" layout-padding ng-hide="vm.hideRescue || !vm.randomRescue">
               <div ng-if="vm.randomRescue.media.photos.photo[2].$t" >
                 <img style="width: 200px;" ng-src="{{ vm.randomRescue.media.photos.photo[2].$t}}" alt="Random rescue dog">
               </div>

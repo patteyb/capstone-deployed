@@ -14,7 +14,7 @@
         <md-card class="breed-card" flex="15" ng-repeat="dog in vm.dogs" ng-if="vm.dogs">  
             <md-card-content>
                 <div>
-                    <a ng-href="{{ dog.imageRef }}" title="{{ dog.imageTitle }}">
+                    <a ng-href="{{ dog.imageRef }}" title="{{ dog.imageTitle }} target="_blank">
                         <img ng-src="{{ dog.imageURL }}" ng-show="dog.imageURL != ''" alt="{{ dog.breed }}" ng-click="vm.getDog( dog._id )">
                         <img ng-src="{{ dog.imageURL2 }}" ng-show="dog.imageURL == '' && dog.imageURL2 != ''" alt="{{ dog.breed }}" ng-click="vm.getDog( dog._id )">
                         <img ng-src="/images/NoPhoto.png" ng-show="dog.imageURL=='' && dog.imageURL2==''" alt="{{ dog.breed }}" ng-click="vm.getDog( dog._id )">
