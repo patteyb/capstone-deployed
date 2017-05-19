@@ -120,11 +120,9 @@
                             {{ vm.dog.longDesc }}
                         </div>
                     <md-card-actions layout="row" layout-wrap layout-align="space-around center">
-                        <div>
-                            <a href="">
-                                <md-button ng-click="vm.showStandard($event, vm.dog)" ng-hide="!vm.dog.breedStandard">
-                                    <i class="mdi mdi-18px mdi-arrow-right-bold-circle-outline"></i> Standard
-                                </md-button>
+                        <div ng-hide="!vm.dog.breedStandard">
+                            <a href="{{ vm.dog.breedStandard }}" target="_blank">
+                                <md-button><i class="mdi mdi-18px mdi-arrow-right-bold-circle-outline"></i> Breed Standard</md-button>
                             </a>
                         </div>
                         <div>
