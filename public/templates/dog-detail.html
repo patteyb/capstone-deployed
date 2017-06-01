@@ -2,7 +2,7 @@
 <div>
     <toolbar></toolbar>
 </div>
-<md-content class="main" ng-model="height" element-size layout="row" layout-wrap >
+<md-content  class="main" ng-model="height" element-size layout="row" layout-wrap >
      <div layout="column" flex="25" layout-margin>
         <div>
             <div layout-padding hide show-gt-md>
@@ -220,7 +220,9 @@
     </div>
     
 </md-content>
-
+<div layout="row" flex layout-align="end center" ng-show="vm.height < contentSize.height+vm.offset || vm.showBackToTop">
+    <md-button ng-click="vm.toTop()"><i class="mdi mdi-chevron-double-up"></i>Back To Top</md-button> 
+</div>
 <div layout="column" flex="100" hide show-gt-sm>
     <footer-bar></footer-bar>
 </div>

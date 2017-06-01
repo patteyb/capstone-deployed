@@ -773,6 +773,7 @@
             vm.noRescues = false;
             vm.haveRescues = false;
             vm.height = window.innerHeight;
+            vm.showBackToTop = true;
 
             // list of breed objects to set up search box
             searchService.loadBreeds().then(function(results) {
