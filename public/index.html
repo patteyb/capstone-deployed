@@ -4,13 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width", initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css?family=Annie+Use+Your+Telescope|Open+Sans" rel="stylesheet">
-  <link href='/styles/vendor.min.css' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.4/angular-material.min.css" />
+  <link href='/styles/materialdesignicons.min.css' rel='stylesheet' type='text/css'> 
   <link href='/styles/style.css' rel='stylesheet' type='text/css'>
 
   <title>A Dog for Me!</title>
 </head>
-<body ng-app="app" ng-cloak>
-    <div class="background" hide show-gt-xs layout layout-md="column" flex="100">
+<body ng-app="app" ng-cloak layout="column">
+    <div class="background" hide show-gt-xs layout layout-md="column" flex="100" style="max-height: 150px;">
         <div layout-align="center center" layout-margin flex="50">
             <img src="/images/logo3-large.png" class="logo">
         </div>
@@ -22,13 +24,23 @@
     <div class="background" hide show-xs>
       <a ui-sref='index'><img class="logo-text" src="/images/logo3-long.png"></a>
     </div>
+   <!-- <toolbar page="vm.page"></toolbar> -->
     <md-content>
         <div ui-view ng-view></div>
     </md-content>
 </body>
 
   <script src="https://www.youtube.com/iframe_api"></script> 
-  <script src="/scripts/vendor.min.js"></script>
+  
+  <script src="/scripts/angular.js"></script>
+  <script src="/scripts/angular-animate.min.js"></script>
+  <script src="/scripts/angular-aria.min.js"></script>
+  <script src="/scripts/angular-material.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.6.4/angular-sanitize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material-icons/0.7.1/angular-material-icons.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.3/angular-ui-router.min.js"></script>
+
+
   <script src="/scripts/app.js"></script>
 
 </html>

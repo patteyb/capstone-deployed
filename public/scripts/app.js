@@ -2,7 +2,7 @@
 
     'use strict';
 
-    angular.module('app', ['ngSanitize', 'ngAnimate', 'ngAria', 'ngMaterial', 'ui.router', 'duScroll']).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, $sceDelegateProvider) {
+    angular.module('app', ['ngSanitize', 'ngAnimate', 'ngAria', 'ngMaterial', 'ui.router']).config(function($mdThemingProvider, $stateProvider, $urlRouterProvider, $sceDelegateProvider) {
 
         $sceDelegateProvider.resourceUrlWhitelist(['self', 'https://www.youtube.com/**', 'https://api.petfinder.com/**']);
 
@@ -87,19 +87,19 @@
             templateUrl: 'templates/account.html'
         })
         .state('account.usercreds', {
-            parent: 'account',
+            //parent: 'account',
             url: '/usercreds',
             controller: 'accountCtrl as vm',
             templateUrl: 'templates/usercreds.html'
         })
         .state('account.favorites', {
-            parent: 'account',
+            //parent: 'account',
             url: '/favorites',
             controller: 'accountCtrl as vm',
             templateUrl: 'templates/compare-favorites.html'
         })
         .state('account.rescues', {
-            parent: 'account',
+            //parent: 'account',
             url: '/rescues',
             controller: 'accountCtrl as vm',
             templateUrl: 'templates/compare-rescues.html'
@@ -138,18 +138,47 @@
 
     angular
         .module('app')
-        .controller('dogsCtrl', function(dogsFactory, sessionService, searchService, locationService, adoptableService, toastService, errorHandlerService, $document, $mdSidenav, $scope, $state) {
+        .controller('dogsCtrl', function(dogsFactory, sessionService, searchService, locationService, adoptableService, toastService, errorHandlerService, $document, $mdSidenav, $scope, $state, $q, $location, $anchorScroll) {
             
             var vm = this;
             vm.page = 'Home';
             vm.currentUser = sessionService.getUser();
-            vm.letter = 'A';             // This sets up for the breeds page
+            vm.letter = 'A';                // This sets up for the breeds page
             vm.hideRescue = false;
-            vm.height = window.innerHeight;
+            vm.height = window.innerHeight; // Used in back to top button
+            vm.offset = 150;                // This establishes a content offset for Back to Top button
             vm.getDogDetail = getDogDetail;
             vm.getShelters = getShelters;
             vm.randomRescue = {};
             vm.getDogDetail = getDogDetail;
+
+            // Retrieve a random rescue dog from petfinder api
+            function getRandomRescue(zip) {
+                var defer = $q.defer();
+                dogsFactory.getRandomRescue(zip).then(function(dog) {
+                    defer.resolve( dog.data.petfinder.pet );
+                }, function(err) {
+                    defer.reject();
+                });
+                return defer.promise;
+            }
+            
+            // Get list of shelters from petfinder api
+            function getShelters() {
+                if (!vm.currentUser.zipConfirmed) {
+                    locationService.getZipCode().then(function(zip) {
+                        $state.go('shelters', { zip: vm.currentUser.zip }); 
+                    }, function() {
+                        toastService.showToast("You didn't enter a valid zip code.");
+                    });     
+                } else {
+                    $state.go('shelters', { zip: vm.currentUser.zip }); 
+                }
+            }
+
+            function getDogDetail(id) {
+                $state.go('detail', {id: id, breed: null});
+            }
 
             // list of breed value/display objects to set up search box
             searchService.loadBreeds().then(function(results) {
@@ -158,7 +187,8 @@
 
             // Set up the back-to-top button
             vm.toTop = function() {
-                $document.scrollTopAnimated(0, 1000);
+                $location.hash('top');
+                $anchorScroll();
             };
 
             // Set up the side navigation for smaller screen sizes
@@ -167,70 +197,30 @@
             };
 
             // Need valid zip code to retrieve a rescue dog from petfinder api
-            // If currentUser's zip is unconfirmed, then get zip from user's browser
+            // Either used currentUser's confirmed zip, get a zip from geolocation,
             // or use a default zip = 20001
-            if (!vm.currentUser.zipConfirmed) {
-                locationService.getLocation().then(function(result) {
-                    vm.currentUser.zip = result;
-                    vm.currentUser.zipConfirmed = true;
-                    sessionService.setUser(vm.currentUser);
-                }, function() {
-                    // Use default zip, but don't indicate zip is confirmed
-                    vm.currentUser.zip = "20001";
-                    sessionService.setUser(vm.currentUser);
-                });
-            }
-
-            // a zip code is established, so get a rescue dog
-            getRandomRescue(vm.currentUser.zip).then(function(rescue) {
-                if (rescue) {
-                    if (Array.isArray(rescue.breeds.breed)) {
-                        rescue.breedStr = rescue.breeds.breed[0].$t + ', ' + rescue.breeds.breed[1].$t;
+            locationService.getLocation().then(function() {
+                getRandomRescue(vm.currentUser.zip).then(function(rescue) {
+                    if (rescue) {
+                        if (Array.isArray(rescue.breeds.breed)) {
+                            rescue.breedStr = rescue.breeds.breed[0].$t + ', ' + rescue.breeds.breed[1].$t;
+                        } else {
+                            rescue.breedStr = rescue.breeds.breed.$t;
+                        }
+                        vm.randomRescue = rescue;
                     } else {
-                        rescue.breedStr = rescue.breeds.breed.$t;
+                        vm.hideRescue = true;
                     }
-                    vm.randomRescue = rescue;
-                    $scope.$apply();
-                } else {
+                }, function() {
                     vm.hideRescue = true;
-                }
-            }, function() {
-                vm.hideRescue = true;
+                });
             });
+
 
             // Show the rescue dog 
             vm.showAdoptable = function(event, adoptable) {
                adoptableService.showAdoptable(event, adoptable);
            };
-
-           // Retrieve a random rescue dog from petfinder api
-            function getRandomRescue(zip) {
-                return new Promise(function(resolve, reject) {
-                    dogsFactory.getRandomRescue(zip).then(function(dog) {
-                        resolve( dog.data.petfinder.pet );
-                    }, function() {
-                        reject();
-                    });
-                });
-            }
-            
-        // Get list of shelters from petfinder api
-        function getShelters() {
-              if (!vm.currentUser.zipConfirmed) {
-                locationService.getZipCode().then(function(zip) {
-                    $state.go('shelters', { zip: vm.currentUser.zip }); 
-                }, function() {
-                    toastService.showToast("You didn't enter a valid zip code.");
-                });     
-            } else {
-                $state.go('shelters', { zip: vm.currentUser.zip }); 
-            }
-        }
-
-        function getDogDetail(id) {
-            $state.go('detail', {id: id, breed: null});
-        }
-
     }); 
 })();
 
@@ -249,7 +239,6 @@
             vm.validationErrors = {};
             vm.hasValidationErrors = false;
             vm.signIn = signIn;
-            vm.toTop = toTop;
             vm.getDogDetail = getDogDetail;
             vm.height = window.innerHeight;
 
@@ -282,11 +271,6 @@
                 vm.hasValidationErrors = false;
             }
 
-            // Set up the back-to-top button
-            function toTop() {
-                $document.scrollTopAnimated(0, 1000);
-            }
-
         }); // End Controller
 })();
 (function() {
@@ -317,7 +301,6 @@
             vm.validationErrors = {};
             vm.hasValidationErrors = false;
             vm.signUp = signUp;
-            vm.toTop = toTop;
             vm.getDogDetail = getDogDetail;
             vm.height = window.innerHeight;
 
@@ -358,11 +341,6 @@
                 vm.hasValidationErrors = false;
             }
 
-            // Set up the back-to-top button
-            function toTop() {
-                $document.scrollTopAnimated(0, 1000);
-            }
-
         }); // End Controller
 })();
 (function () {
@@ -370,7 +348,7 @@
 
     angular
         .module('app')
-        .controller('breedsCtrl', function(dogsFactory, usersFactory, searchService, sessionService, errorHandlerService, toastService, favoritesService, $document, $stateParams, $mdSidenav, $state) {
+        .controller('breedsCtrl', function(dogsFactory, usersFactory, searchService, sessionService, errorHandlerService, toastService, favoritesService, $document, $stateParams, $mdSidenav, $state, $location, $anchorScroll) {
             
             var vm = this;
             var pageTemplate = 'Breeds // ';
@@ -378,7 +356,7 @@
             vm.filters = {};
             vm.isBreedsPage = true;
             vm.height = window.innerHeight;
-            vm.showBackToTop = true;
+            vm.offset = 400;
             vm.letter = $stateParams.letter;
             vm.getBreedsByLetter = getBreedsByLetter;
             vm.toTop = toTop;
@@ -423,7 +401,8 @@
 
             // Set up the back-to-top button
             function toTop() {
-                $document.scrollTopAnimated(0, 1000);
+                $location.hash('top');
+                $anchorScroll();
             }
 
             function getDogDetail(id) {
@@ -438,7 +417,7 @@
 
     angular
         .module('app')
-        .controller('filteredCtrl', function(dogsFactory, usersFactory, sessionService, searchService, errorHandlerService, toastService, favoritesService, $document, $state, $mdSidenav) {
+        .controller('filteredCtrl', function(dogsFactory, usersFactory, sessionService, searchService, errorHandlerService, toastService, favoritesService, $document, $state, $mdSidenav, $anchorScroll, $location) {
             
             var vm = this;
             vm.page = 'Dog Breeds // Filtered';
@@ -462,7 +441,8 @@
 
             // Set up the back-to-top button
             vm.toTop = function() {
-                $document.scrollTopAnimated(0, 1000);
+                $location.hash('top');
+                $anchorScroll();
             };
 
             // Set up the side navigation for smaller screen sizes
@@ -477,7 +457,8 @@
 
             // Set up the back-to-top button
             vm.toTop = function() {
-                $document.scrollTopAnimated(0, 1000);
+                $location.hash('top');
+                $anchorScroll();
             };
 
             // Retrieve dogs from db that fit the filters
@@ -514,7 +495,7 @@
 
     angular
         .module('app')
-        .controller('adminCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, $document, $scope, $http, $state, $mdSidenav, $mdDialog) {
+        .controller('adminCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, $document, $scope, $http, $state, $mdSidenav, $mdDialog, $anchorScroll, $location) {
             
             var vm = this;
             vm.page = 'Site Admin';
@@ -756,7 +737,8 @@
 
             // Set up the back-to-top button
             vm.toTop = function() {
-                $document.scrollTopAnimated(0, 1000);
+                $location.hash('top');
+                $anchorScroll();
             };
 
             function getDogDetail(id) {
@@ -782,7 +764,7 @@
 
     angular
         .module('app')
-        .controller('dogDetailCtrl', function(dogsFactory, usersFactory, sessionService, errorHandlerService, toastService, searchService, locationService, adoptableService, favoritesService, $document, $sce, $scope, $http, $mdDialog, $mdSidenav, $stateParams, $state) {
+        .controller('dogDetailCtrl', function(dogsFactory, usersFactory, sessionService, errorHandlerService, toastService, searchService, locationService, adoptableService, favoritesService, $document, $sce, $scope, $http, $mdDialog, $mdSidenav, $stateParams, $state, $location, $anchorScroll) {
 
             var vm = this;
             vm.currentUser = sessionService.getUser();
@@ -977,7 +959,8 @@
 
             // Set up the back-to-top button
             vm.toTop = function() {
-                $document.scrollTopAnimated(0, 1000);
+                $location.hash('top');
+                $anchorScroll();
             };
     });
 })();
@@ -990,7 +973,7 @@
 
     angular
         .module('app')
-        .controller('accountCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, $mdSidenav, $state, $document) {
+        .controller('accountCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, $mdSidenav, $state, $document, $anchorScroll, $location) {
             
             var vm = this;
             vm.page = 'Account';
@@ -1005,8 +988,15 @@
             vm.favorites = vm.currentUser.favorites;
             vm.sort = 'fav.breed';
             vm.count = 0;
-            vm.height = window.innerHeight;
+            vm.height = window.innerHeight; // Needed for back-to-top button
+            vm.offset = 150;                // Needed for back-to-top button
             vm.getDogDetail = getDogDetail;
+            vm.toTop = toTop;
+
+            vm.switchPhoto = function(parentPhoto, photo) {
+                vm.rescueDogs[parentPhoto].mainPhoto = vm.rescueDogs[parentPhoto].photos[photo];
+                console.log(vm.rescueDogs[parentPhoto]);
+            }; 
 
             // list of breed value/display objects to set up search box
             searchService.loadBreeds().then(function(results) {
@@ -1055,11 +1045,6 @@
                     toastService('Unable to get rescues at this time.');
                 });
             }
-
-            // Set up the back-to-top button
-            vm.toTop = function() {
-                $document.scrollTopAnimated(0, 1000);
-            };
 
             // This enables dynamically sorting the favorites list by user
             vm.dynamicOrder = function(dogs) {
@@ -1227,18 +1212,49 @@
                 if (dog.media.photos.photo) {
                     var photoArray = [];
                     var mainPhoto = '';
+                    var photo = {};
                     for (var k = 0; k < dog.media.photos.photo.length; k++) {
                         if (dog.media.photos.photo[k]['@size'] === 'x') {
                             if (mainPhoto === '') {
                                 mainPhoto = dog.media.photos.photo[k].$t;
-                            } else {
-                                photoArray.push(dog.media.photos.photo[k].$t);
                             }
+                            photoArray.push(dog.media.photos.photo[k].$t);
                         }
                     }
                     dog.mainPhoto = mainPhoto;
                     dog.photos = photoArray;
                 }
+
+                if (dog.breeds.breed) {
+                    dog.breedArray = [];
+                    if (!Array.isArray(dog.breeds.breed)) {
+                        dog.breedArray.push(dog.breeds.breed.$t);
+                    } else {
+                        for (var i = 0; i < dog.breeds.breed.length; i++) {
+                            dog.breedArray.push(dog.breeds.breed[i].$t);
+                        }
+                    }
+                }
+
+                if (dog.sex.$t && dog.sex.$t !== '') {
+                    if ( dog.sex.$t.toUpperCase() === 'M') {
+                        dog.sex.$t = "Male";
+                    } else {
+                        dog.sex.$t = 'Female';
+                    }
+                }
+
+                if (dog.size.$t && dog.size.$t !== '') {
+                    if (dog.size.$t.toUpperCase === 'S') {
+                        dog.size.$t = "Small";
+                    } else if (dog.size.$t.toUpperCase === 'M') {
+                        dog.size.$t = 'Medium';
+                    } else {
+                        dog.size.$t = 'Large';
+                    }
+                }
+
+
             }
 
             function getDogDetail(id) {
@@ -1258,6 +1274,12 @@
                 vm.hasValidationErrors = false;
             }
 
+            // Set up the back-to-top button
+            function toTop() {
+                $location.hash('top');
+                $anchorScroll();
+            }
+
     });
 })();
 (function () {
@@ -1265,20 +1287,21 @@
 
     angular
         .module('app')
-        .controller('sheltersCtrl', function(dogsFactory, sessionService, searchService, locationService, adoptableService, toastService, errorHandlerService, $document, $scope, $mdDialog, $stateParams, $state) {
+        .controller('sheltersCtrl', function(dogsFactory, sessionService, searchService, locationService, adoptableService, toastService, errorHandlerService, $document, $scope, $mdDialog, $stateParams, $state, $location, $anchorScroll) {
             
             var vm = this;
             vm.page = 'Shelters';
             vm.zip = $stateParams.zip;
             vm.currentUser = sessionService.getUser();
             vm.shelters = [];
-            vm.showBackToTop = true;
+            //vm.showBackToTop = true;
             vm.getshelters = getShelters;
             vm.getShelterPets = getShelterPets;
             vm.getDogDetail = getDogDetail;
             vm.getNewZipCode = getNewZipCode;
             vm.toTop = toTop;
             vm.height = window.innerHeight;
+            vm.offset = 200;
             vm.getDogDetail = getDogDetail;
 
              // list of breed objects to set up search box
@@ -1385,6 +1408,8 @@
                         vm.shelters = [];
                         $scope.$apply();
                     });
+               }, function() {
+                   toastService.showToast('Action cancelled.');
                });
            }
 
@@ -1394,7 +1419,8 @@
 
            // Set up the back-to-top button
             function toTop() {
-                $document.scrollTopAnimated(0, 1000);
+                $location.hash('top');
+                $anchorScroll();
             }
 
         });
@@ -1404,7 +1430,7 @@
 
     angular
         .module('app')
-        .controller('bestOfCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, favoritesService, $mdSidenav, $state, $document, $stateParams) {
+        .controller('bestOfCtrl', function(dogsFactory, usersFactory, searchService, sessionService,  errorHandlerService, toastService, favoritesService, $mdSidenav, $state, $document, $stateParams, $anchorScroll, $location) {
 
         var vm = this;
         vm.page = 'Best Dogs';
@@ -1413,6 +1439,7 @@
         vm.getBestOf = getBestOf;
         vm.toTop = toTop;
         vm.showBackToTop = true;
+        vm.offset = 600;
         vm.height = window.innerHeight;
         vm.getDogDetail = getDogDetail;
 
@@ -1469,7 +1496,8 @@
 
         // Set up the back-to-top button
             function toTop() {
-                $document.scrollTopAnimated(0, 1000);
+                $location.hash('top');
+                $anchorScroll();
             }
     });
 })();
@@ -1523,24 +1551,24 @@
             function getRescues(idArray) {
                 //var defer = $q.defer();
                 var promises = idArray.map( function( id ) {
-                    var url = 'https://api.petfinder.com/pet.get?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json&callback=JSON_CALLBACK';
+                    var url = 'https://api.petfinder.com/pet.get?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json';
                     return $http.jsonp(url);
                 });
                 return $q.all(promises);
             }
 
             function getRandomRescue(zip) {
-                 var url = 'https://api.petfinder.com/pet.getRandom?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&location=' + zip + '&output=full&format=json&callback=JSON_CALLBACK';
+                var url = 'https://api.petfinder.com/pet.getRandom?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&location=' + zip + '&output=full&format=json';
                 return $http.jsonp(url);
             }
 
             function getShelters(zip) {
-                var url = 'https://api.petfinder.com/shelter.find?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&location=' + zip + '&format=json&callback=JSON_CALLBACK';
+                var url = 'https://api.petfinder.com/shelter.find?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&location=' + zip + '&format=json';
                 return $http.jsonp(url);
             }
 
             function getShelterPets(id) {
-                var url = 'https://api.petfinder.com/shelter.getPets?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json&callback=JSON_CALLBACK';
+                var url = 'https://api.petfinder.com/shelter.getPets?key=d93ef8fff402f8bfe597a1e1613c9b4b&id=' + id + '&format=json';
                 return $http.jsonp(url);
             }
 
@@ -1567,7 +1595,7 @@
 
 
             function getBreedsFromPetfinder() {
-                var url = 'https://api.petfinder.com/breed.list?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&format=json&callback=JSON_CALLBACK';
+                var url = 'https://api.petfinder.com/breed.list?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&format=json';
 
                 $http.jsonp(url).success(function(breedlist) {
                     return breedlist.petfinder.breeds.breed; 
@@ -1616,7 +1644,7 @@
 
             function getAdoptables(breed, zip) {
                 return new Promise(function(resolve, reject) {   
-                    var url = 'https://api.petfinder.com/pet.find?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&breed=' + breed + '&location=' + zip + '&format=json&callback=JSON_CALLBACK';
+                    var url = 'https://api.petfinder.com/pet.find?key=d93ef8fff402f8bfe597a1e1613c9b4b&animal=dog&breed=' + breed + '&location=' + zip + '&format=json';
 
                     $http.jsonp(url).then(function(adoptables) {
                         if (adoptables.data.petfinder.pets.pet) {
@@ -1893,12 +1921,34 @@
             replace: false
         };
     })
-    .directive('elementSize', function () {
+    .directive('elementSize', function ($timeout) {
         return {
             restrict: 'A',
-            link: function (scope, element) {
-            element.ready(function () {
-                    scope.height = element.prop('clientHeight');
+            link: function (scope, element, attrs) {
+                element.ready(function () {
+                    scope.$watch(
+                        function () { return element[0].clientHeight; },
+                        function (newValue, oldValue) {
+                            var height, width;
+                            if (newValue !== oldValue) {
+                                $timeout(function() {
+                                    height  = element[0].clientHeight;
+                                    width  = element[0].clientWidth;
+                                    if (attrs.key) {
+                                        scope[attrs.key] = {
+                                            height: height,
+                                            width: width
+                                        };
+                                    } else {
+                                        scope.elementSize = {
+                                            height: height,
+                                            width: width
+                                        };
+                                    }
+                                });
+                            }
+                        }
+                    );  
                 });
             }
         }; 
@@ -1911,7 +1961,14 @@
     })
     .directive('toolbar', function(){
         return {
+            restrict: 'E',
+            /*scope: {
+                page: '@'
+            },*/
             templateUrl: '/templates/toolbar.html',
+            /*link: function($scope, elem, attrs) {
+                $scope.page = attrs.page;
+            },*/
             replace: false
         };
     })
@@ -2328,7 +2385,7 @@
 
     angular
         .module('app')
-        .factory('locationService', function(sessionService, $mdDialog, $http) {
+        .factory('locationService', function(sessionService, $mdDialog, $http, $q) {
 
         var _this = this;
         var currentUser = sessionService.getUser();
@@ -2336,15 +2393,18 @@
         // Get the location of the user from their browser
         // And then use google's api to compute the zip from the lat/long coordinates
         _this.getLocation = function() {
-            return new Promise(function(resolve, reject) {
-               var zip;
-               if(navigator.geolocation) {
+            var defer = $q.defer();
+            var zip;
+            if (currentUser.zipConfirmed) {
+                defer.resolve(currentUser.zip);
+            } else {
+                if(navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function(pos) {
                         var geoStr = pos.coords.latitude +", " + pos.coords.longitude;
                         var googleURL = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + geoStr + "&key=AIzaSyC9fO8vW7pPyIRlafuzg9O4T-sm5TJ3kPo";
 
-                        $http.get(googleURL).success(function(results) {
-                            var addressArr = results.results[0].address_components;
+                        $http.get(googleURL).then(function(results) {
+                            var addressArr = results.data.results[0].address_components;
                             for ( var i = 0; i < addressArr.length; i++) {
                                 if (addressArr[i].types[0] === 'postal_code') {
                                     zip = addressArr[i].short_name;
@@ -2355,19 +2415,25 @@
                                 currentUser.zip = zip;
                                 currentUser.zipConfirmed = true;
                                 sessionService.setUser(currentUser);
-                                resolve(zip);
+                                defer.resolve(zip);
                             } else {
-                                resolve( "20001");
+                                currentUser.zip = '20001';
+                                sessionService.setUser(currentUser);
+                                defer.resolve(currentUser.zip);
                             }
-                        }).error(function() {
-                            reject();
+                        }, function() {
+                            currentUser.zip = '20001';
+                            sessionService.setUser(currentUser);
+                            defer.resolve(currentUser.zip);
                         });
                     });
                 } else { 
-                    reject();
+                    currentUser.zip = '20001';
+                    sessionService.setUser(currentUser);
+                    defer.resolve(currentUser.zip);
                 }
-                reject();
-            });
+            }
+            return defer.promise;
         };
 
         // Dialog to retrieve zip code from user
@@ -2469,9 +2535,9 @@
                 template: 
                     '<md-dialog class="std-dialog" aria-label="Adoptable dialog" layout-padding>' +
                     '   <md-dialog-content>' +
-                    '       <md-content class="md-title teal" layout-padding>' +
+                    '       <div class="md-title teal" layout-padding>' +
                     '           {{ dog.name.$t }}' + 
-                    '       </md-content>' +
+                    '       </div>' +
                     '       <div layout="row" layout-padding>' +
                     '           {{ dog.description.$t }}' +
                     '       </div>' +
@@ -2513,7 +2579,7 @@
                     '          Close Dialog' +
                     '       </md-button>' +
                     '   </md-dialog-actions>' +
-                    '</md-dialog>', 
+                    '</md-dialog>',
                 locals: { dog: dog, control: control },
                 parent: angular.element(document.body),
                 targetEvent: event,

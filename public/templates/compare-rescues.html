@@ -1,89 +1,106 @@
-<div class="main" ng-model="height" element-size layout-margin layout-padding layout-wrap layout-align="center start" flex >
-    <div layout="column" layout-wrap layout-align="center center" flex ng-if="!vm.rescueDogs || vm.rescueDogs.length == 0">
-        <div><h1>Your Rescue Dogs</h1></div>
-        <div>You have not selected any rescue dogs to track.</div>
+<div class="main rescue" key="contentSize" element-size layout-margin layout-padding layout-wrap layout-align="start start" >
+    <div layout="column" layout-align="start center" layout-align-xs="center center" ng-if="!vm.rescueDogs || vm.rescueDogs.length == 0" flex>
+        <div flex><h1>Your Rescue Dogs</h1></div>
+        <div flex>You have not selected any rescue dogs to track.</div>
     </div>
-    <div layout="row" layout-align="center center">
-        <div ng-show="vm.rescueDogs && vm.rescueDogs.length !== 0" layout-wrap layout-align="center start" flex>
-            <div layout="column" layout-margin layout-padding layout-align="center center">
-                <div><h1>Your Rescue Dogs</h1></div>
-                <div><strong>Here is the list of adoptable dogs you have selected to track.<br>To remove a dog from your list, simply click on the broken heart.</strong></div>
+    <div layout="column" ng-show="vm.rescueDogs && vm.rescueDogs.length !== 0" flex>
+        <div layout="column" layout-margin layout-padding layout-align="start center" flex>
+            <div layout-margin flex><h1>Your Rescue Dogs</h1></div>
+            <div layout-margin flex><strong>Here is the list of adoptable dogs you have selected to track.<br>To remove a dog from your list, simply click on the broken heart.</strong></div>
+        </div>
+        <div ng-show="vm.count !== 0" layout-margin layout-align="start center" flex>
+            Dogs removed from your list because they were no longer listed on Petfinder: {{ vm.count }}
+        </div>
+        <div layout="column" class="rescue-dog-photos" ng-repeat="dog in vm.rescueDogs" layout-gt-sm="row">
+            <div layout="column">
+                <div class="main-photo-container" layout-align="start center">
+                    <img ng-src="{{ dog.mainPhoto }}">
+                </div>
+                <div ng-click="vm.switchPhoto($parent.$index, $index)" class="photo-container" ng-repeat="photo in dog.photos" ng-show="dog.mainPhoto != photo" layout-align="start center">
+                        <img class="img-hover" ng-src="{{ photo }}">
+                </div>
             </div>
-            <div ng-show="vm.count !== 0">
-                Dogs removed from your list because they were no longer listed on Petfinder: {{ vm.count }}
-            </div>
-            <div layout="row" layout-align="center start" layout-wrap>
-                <md-card class="rescue-card" ng-repeat="dog in vm.rescueDogs">
-                    <md-card-title>
-                        <md-card-title-text class="md-headline">{{ dog.name.$t }}</md-card-title-text>
-                        <md-card-title-media>
-                            <md-button ng-click="vm.deleteRescue(dog.id.$t, true)">
-                                <i class="mdi mdi-36px mdi-heart-broken"></i>
-                                <md-tooltip>Remove</md-tooltip>
-                            </md-button>
-                        </md-card-title-media>
-                    </md-card-title>
-                    <div layout="row" layout-margin layout-sm="column" layout-xs="column" layout-wrap>
-                        <div layout="column" class="md-media-xl card-media" flex="45" layout-margin>
-                            <img class="main-photo" ng-src="{{ dog.mainPhoto }}">
+
+            <div layout="column" class="rescue-dog-info">
+                <div layout="column" layout-gt-xs="row" layout-margin layout-padding layout-align="center center" layout-align-gt-xs="space-between start">
+                    <div class="md-headline" flex="45" >
+                        {{ dog.name.$t }}
+                    </div>
+                    <div layout="column" layout-align-xs="center center" flex="45">
+                        <div class="rescue-heading" layout="row">
+                            Breed
                         </div>
-                        <div layout="column" flex>
-                            <div layout="row" layout-margin layout-padding layout-xs="column">
-                                <div layout="column">
-                                    <div class="rescue-heading" layout="row">
-                                        Breed
-                                    </div>
-                                    <div layout="row" ng-repeat="breed in dog.breeds.breed">
-                                        {{ breed.$t }}
-                                    </div>
-                                </div>
-                                <div layout="column">
-                                    <div class="rescue-heading"  layout="row">
-                                        Age
-                                    </div>
-                                    <div layout="row">
-                                        {{ dog.age.$t }}
-                                    </div>
-                                </div>
-                                <div layout="column">
-                                    <div class="rescue-heading" layout="row">
-                                        Sex
-                                    </div>
-                                    <div layout="row">
-                                        {{ dog.sex.$t }}
-                                    </div>
-                                </div>
-                                <div layout="column">
-                                    <div class="rescue-heading" layout="row">
-                                        Size
-                                    </div>
-                                    <div layout="row">
-                                        {{ dog.size.$t }}
-                                    </div>
-                                </div>
-                            </div> <!-- end row -->
+                        <div layout="row" ng-repeat="breed in dog.breedArray">
+                            {{ breed }}
+                        </div>
+                    </div>
+                    <div flex="10" layout-align="start center"> 
+                        <md-button ng-click="vm.deleteRescue(dog.id.$t, true)">
+                            <i class="mdi mdi-36px mdi-heart-broken"></i>
+                            <md-tooltip>Remove</md-tooltip>
+                        </md-button>
+                    </div>
+                </div>
+                <div layout="row" layout-margin layout-padding>
+                    {{ dog.description.$t }}
+                </div>
+                <div layout="column" flex>
+                    <div layout="row" layout-margin layout-padding layout-xs="column" layout-align-xs="start center">
+                        <div layout="column">
+                            <div class="rescue-heading"  layout="row">
+                                Age
+                            </div>
                             <div layout="row">
-                                <div ng-repeat="photo in dog.photos" layout-margin>
-                                    <img class="photos" ng-src="{{ photo }}">
-                                </div>
-                            </div>
-                        </div>  
-                    </div>
-                    <div layout="row" layout-margin layout-padding>
-                        {{ dog.description.$t }}
-                    </div>
-                    <div layout="row"  layout-margin layout-xs="column">
-                        <div ng-show="dog.hasOptions" flex="40">
-                            <div layout="column" ng-show="dog.option">
-                                <i class="mdi mdi-checkbox-multiple-marked-circle"></i>&nbsp; {{ dog.option }}
-                            </div>
-                            <div layout="column" ng-show="!dog.option ">
-                                <div layout="row" ng-repeat="option in dog.options.option">
-                                    <i class="mdi mdi-checkbox-multiple-marked-circle"></i>&nbsp; {{ option.$t }}
-                                </div>        
+                                {{ dog.age.$t }}
                             </div>
                         </div>
-                        <div layout="column" flex="40">
+                        <div layout="column">
+                            <div class="rescue-heading" layout="row">
+                                Sex
+                            </div>
+                            <div layout="row">
+                                {{ dog.sex.$t }}
+                            </div>
+                        </div>
+                        <div layout="column">
+                            <div class="rescue-heading" layout="row">
+                                Size
+                            </div>
+                            <div layout="row">
+                                {{ dog.size.$t }}
+                            </div>
+                        </div>
+                        <div layout="column">
+                            <div class="rescue-heading" layout="row">
+                                Last Updated
+                            </div>
+                            <div layout="row">
+                                {{ dog.lastUpdate.$t }}
+                            </div>
+                        </div>
+                        <div layout="column">
+                            <div class="rescue-heading" layout="row">
+                                Status
+                            </div>
+                            <div layout="row">
+                                {{ dog.status.$t }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div layout="column" ng-show="dog.hasOptions" layout-padding layout-margin layout-gt-xs="row">
+                    <div>
+                        <div layout="column" ng-show="dog.option">
+                            <i class="mdi mdi-checkbox-multiple-marked-circle"></i>&nbsp; {{ dog.option }}
+                        </div>
+                        <div layout="column" ng-show="!dog.option ">
+                            <div layout="row" ng-repeat="option in dog.options.option">
+                                <i class="mdi mdi-checkbox-multiple-marked-circle"></i>&nbsp; {{ option.$t }}
+                            </div>        
+                        </div>
+                    </div>
+                    <div>
+                        <div layout="column">
                             <span class="rescue-heading">
                                 Contact Information
                             </span>
@@ -103,24 +120,13 @@
                                 <i class="mdi mdi-phone-classic"></i> {{ dog.contact.phone.$t }}
                             </span>         
                         </div>
-                        <div layout="column" flex="20">
-                            <div class="rescue-heading" layout="row">
-                                Last Updated
-                            </div>
-                            <div layout="row">
-                                {{ dog.lastUpdate.$t }}
-                            </div>
-                            <div class="rescue-heading" layout="row">
-                                Status
-                            </div>
-                            <div layout="row">
-                                {{ dog.status.$t }}
-                            </div>
-                        </div>
                     </div>
-                    </div>
-                </md-card>
+                </div>
             </div>
+            </div> 
         </div>
     </div>
+</div>
+<div layout="row" flex layout-align="end center" ng-show="vm.height < contentSize.height+vm.offset || vm.showBackToTop">
+    <md-button ng-click="vm.toTop()"><i class="mdi mdi-chevron-double-up"></i>Back To Top</md-button> 
 </div>

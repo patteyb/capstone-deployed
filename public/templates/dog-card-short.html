@@ -1,5 +1,5 @@
 <!-- CARD CONTENT -->
-<div flex="100" ng-model="height" element-size>
+<div flex="100">
     <div class="best-of-directions" layout="row" layout-align="center center" layout-margin layout-padding>
         Click on the BREED NAME to view more details on the breed.
     </div>
@@ -10,7 +10,7 @@
     <div class="breeds-directions" ng-show="!vm.currentUser.isAuthenticated" layout="row"  layout-align="center center" layout-margin>
         SIGN IN or SIGN UP to save breeds and rescues to your personal favorites list.
     </div> 
-    <md-content layout="row" layout-align="center" layout-wrap layout-margin layout-padding>
+    <md-content layout="row" layout-align="center" layout-wrap layout-margin layout-padding key="contentSize" element-size>
         <md-card class="breed-card" flex="15" ng-repeat="dog in vm.dogs" ng-if="vm.dogs">  
             <md-card-content>
                 <div>
@@ -30,4 +30,11 @@
            </md-card-content> 
         </md-card>
     </md-content>
+</div>
+<!-- We need to have this here so that the dynamic back-to-top button works properly -->
+<div layout="row" flex layout-align="end center" ng-show="vm.height < contentSize.height+vm.offset || vm.showBackToTop">
+    <md-button ng-click="vm.toTop()"><i class="mdi mdi-chevron-double-up"></i>Back To Top</md-button> 
+</div>
+<div class="footer">
+    <footer-bar></footer-bar>
 </div>

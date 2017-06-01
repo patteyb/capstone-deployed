@@ -1,4 +1,4 @@
-<div class="main" layout-margin ng-model="height" element-size>
+<div class="main" layout-margin key="contentSize" element-size>
     <h1>Your Favorite Breeds</h1>
     <div layout="row" ng-if="!vm.favDogs || vm.favDogs.length == 0">
         You have not selected any breeds to include in your favorites list.
@@ -68,4 +68,7 @@
             </table>
         </div>
     </md-content>
+</div>
+<div layout="row" flex layout-align="end center" ng-show="vm.height < contentSize.height+vm.offset || vm.showBackToTop">
+    <md-button ng-click="vm.toTop()"><i class="mdi mdi-chevron-double-up"></i>Back To Top</md-button> 
 </div>

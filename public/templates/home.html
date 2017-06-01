@@ -2,7 +2,7 @@
   <toolbar></toolbar>
 </div>
 <md-content>
-<div class="main" ng-model="height" element-size>
+<div class="main" id="main-height" key="contentSize" element-size>
   <div layout="column" flex="90" flex-offset="5" layout-gt-md="row" >
       
       <section layout="column" class="intro" flex="90" flex-gt-md="60" layout-margin flex-order-gt-md="1">
@@ -62,7 +62,7 @@
         </md-card> 
         <md-card>
           <md-card-content class="card-bg">  
-              <div class="md-title best-of-title">
+              <div class="md-title best-of-title" layout layout-align="center center">
                   <strong>Have a specific need?<br> Check out our Best lists:</strong>
               </div>
               <div class="best-of-section" layout="column" layout-padding layout-align="center start" flex-order-sm="3">
@@ -160,6 +160,9 @@
   </div>
 </div>
 
+<div layout="row" flex layout-align="end center" ng-show="vm.height < contentSize.height+vm.offset || vm.showBackToTop">
+    <md-button ng-click="vm.toTop()"><i class="mdi mdi-chevron-double-up"></i>Back To Top</md-button> 
+</div>
 <footer-bar></footer-bar>
 
 </md-content>

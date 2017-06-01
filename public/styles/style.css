@@ -68,9 +68,9 @@ md-dialog md-title {
 
 /* STYLES FOR MENUS */
 
-md-toolbar {
-  height: 72px;
-}
+/*md-toolbar {
+  height: 62px;
+}*/
 
 .yellow {
   background-color: #ffc107;
@@ -104,14 +104,16 @@ md-toolbar {
   color: teal;
   line-height: normal;
   font-size: 2rem;
-  margin-bottom: 0;
+  margin: 0 20px;
+  padding: 0
 }
 
 .tagline-2 {
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
   font-size: 1rem;
   font-weight: bold;
-  margin-top: 0;
+  margin: 0 20px;
+  padding: 0
 }
 
 
@@ -150,11 +152,15 @@ img {
   width: 100%;
   border-radius: 2px;
   box-shadow: 0px 4px 4px goldenrod;
+  -moz-box-shadow: 0px 4px 4px goldenrod; 
+  -webkit-box-shadow: 0px 4px 4px goldenrod; 
 }
 
 md-card {
   border-radius: 2px;
   box-shadow: 4px 4px 4px #777;
+  -moz-box-shadow: 4px 4px 4px #777; 
+  -webkit-box-shadow: 4px 4px 4px #777;
 }
 
 .breed-card {
@@ -343,6 +349,7 @@ a {
 
 .background {
   background: url("/images/farmer.png");
+  max-height: 150px;
 }
 
 .card-bg {
@@ -351,6 +358,8 @@ a {
 
 .best-of-title {
   color: #ffc107;
+  background: #f9f4eb;
+  height: 75px;
   font-size: 1.25rem;
   text-align: center;
 }
@@ -553,9 +562,9 @@ a {
   transform: translateY(30px);
 }
 
-.rescue-card {
+/*.rescue-card {
   max-width: 850px;
-}
+}*/
 
 /** Styles for Admin Page */
 .user-list {
@@ -676,6 +685,9 @@ iframe {
 }
 
 /* styles for rescues */
+.rescue {
+  max-width: 1000px;
+}
 
 .rescue-on {
   display: block;
@@ -702,14 +714,41 @@ iframe {
   font-weight: bold;
 }
 
-.main-photo {
-  width: 100%;
+.rescue-dog-photos {
+  border-bottom: 3px solid teal;
+  margin-bottom: 20px;
+  float: left;
 }
 
-.photo {
-  width: 50%;
+.rescue-dog-info {
+  width: 650px;
+}
+
+.main-photo-container {
+  min-height: 1rem;
+}
+
+.main-photo-container img {
+  max-width: 400px;
+} 
+
+.photo-container {
+  display: inline-block;
+  padding-left: 5px;
+  padding-top: 5px;
+}
+
+.img-hover:hover {
+  -moz-box-shadow: 0 0 20px goldenrod; 
+  -webkit-box-shadow: 0 0 20px goldenrod; 
+  box-shadow: 0 0 20px goldenrod; 
+}
+
+.photo-container img {
+  max-width: 100px;
   box-shadow: none;
 }
+
 
 /** MEDIA QUERIES */
 
@@ -732,3 +771,15 @@ iframe {
       background: url("/images/pawPrintBG.jpg") repeat-y left;
     }
   }
+
+  @media only screen and (max-width: 500px) {
+    .rescue-desc {
+      width: 300px;
+    }
+  }
+
+@media only screen and (max-width: 670px) {
+  .rescue-dog-info {
+    width: 400px;
+  }
+}

@@ -1,8 +1,8 @@
 <div>
   <toolbar></toolbar>
 </div>
-<div class="main" ng-model="height" element-size flex="90" flex-offset="5" layout-margin>
-    <div class="center" ng-if="vm.shelters.length==0">
+<div class="main" key="contentSize" element-size flex="90" flex-offset="5" layout-margin layout-padding>
+    <div class="center" ng-if="vm.shelters.length==0" >
         We could find no shelters near zip code {{ vm.currentUser.zip}}. 
     </div>
     <div class="center" ng-hide="vm.shelters.length==0">
@@ -33,7 +33,9 @@
         </tr>
     </table>
 </div>
-
+<div layout="row" flex layout-align="end center" ng-show="vm.height < contentSize.height+vm.offset || vm.showBackToTop">
+    <md-button ng-click="vm.toTop()"><i class="mdi mdi-chevron-double-up"></i>Back To Top</md-button> 
+</div>
 <div>
   <footer-bar></footer-bar>
 </div>
