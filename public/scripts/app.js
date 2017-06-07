@@ -773,7 +773,6 @@
             vm.noRescues = false;
             vm.haveRescues = false;
             vm.height = window.innerHeight;
-            vm.showBackToTop = true;
 
             // list of breed objects to set up search box
             searchService.loadBreeds().then(function(results) {
@@ -851,6 +850,7 @@
             if ($stateParams.id) {
                 getDog($stateParams.id).then(function(dog) {
                     vm.dog = dog;
+                    document.getElementById('longDesc').innerHTML = vm.dog.longDesc;
                     vm.page = 'Breed // ' + vm.dog.breed;
                     getVideos(vm.dog.breed);
                 });

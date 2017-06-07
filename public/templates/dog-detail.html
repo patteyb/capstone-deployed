@@ -2,7 +2,7 @@
 <div>
     <toolbar></toolbar>
 </div>
-<md-content  class="main" ng-model="height" element-size layout="row" layout-wrap >
+<md-content class="main" ng-model="height" element-size layout="row" layout-wrap >
      <div layout="column" flex="25" layout-margin>
         <div>
             <div layout-padding hide show-gt-md>
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                     <hr>
-                    <div layout="row" layout-align="start center">
+                    <div layout="row">
                         <div class="icon-medium" flex="25" layout-fill layout-padding>
                             <p><img class="icon left" ng-src="/images/{{ vm.dog.groomIcon }}Groom.png">
                         </div>
@@ -116,9 +116,9 @@
                             </md-card-content>
                         </md-card>
                     </div>
-                    <div layout="row">
-                            {{ vm.dog.longDesc }}
-                        </div>
+                    <div layout="column" id="longDesc">
+
+                    </div>
                     <md-card-actions layout="row" layout-wrap layout-align="space-around center">
                         <div ng-hide="!vm.dog.breedStandard">
                             <a href="{{ vm.dog.breedStandard }}" target="_blank">
@@ -220,9 +220,7 @@
     </div>
     
 </md-content>
-<div layout="row" flex layout-align="end center" ng-show="vm.height < contentSize.height+vm.offset || vm.showBackToTop">
-    <md-button ng-click="vm.toTop()"><i class="mdi mdi-chevron-double-up"></i>Back To Top</md-button> 
-</div>
+
 <div layout="column" flex="100" hide show-gt-sm>
     <footer-bar></footer-bar>
 </div>
