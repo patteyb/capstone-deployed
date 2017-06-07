@@ -53,7 +53,7 @@ db.on('error', function(err) {
 db.once('open', function() {
     // all database communication goes here
     // seed the database
-    //require('./seed');
+    require('./seed');
     console.log('Database connection successful');
 });
 
